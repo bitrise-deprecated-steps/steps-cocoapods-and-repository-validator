@@ -66,4 +66,4 @@ IFS=";"
 project_list_with_schemes="${projects_encoded[*]}"
 unset IFS
 
-export CONCRETE_SCHEMES=$project_list_with_schemes
+echo 'export CONCRETE_SCHEMES=$project_list_with_schemes' >> ~/.bash_profile
