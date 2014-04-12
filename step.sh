@@ -3,7 +3,7 @@
 echo "$ cd $CONCRETE_SOURCE_DIR"
 cd $CONCRETE_SOURCE_DIR
 
-if [ -n "GATHER_PROJECTS" ]; then
+if [ -n "$GATHER_PROJECTS" ]; then
   git remote set-head origin -d
 
   for branch in $(git branch -r); 
