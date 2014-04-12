@@ -58,12 +58,7 @@ do
     IFS=","
     encoded_scheme_list="${schemes_encoded[*]}"
     unset IFS
-    projects_encoded+=($(echo "$project($encoded_scheme_list)"))
+    echo "$project (encoded_scheme_list)" >> ~/.schemes
   fi
 done
 
-IFS=";"
-project_list_with_schemes="${projects_encoded[*]}"
-unset IFS
-
-echo 'export CONCRETE_SCHEMES=$project_list_with_schemes' >> ~/.bash_profile
