@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo "$ cd $CONCRETE_RELATIVE_GIT_DIRECTORY"
-cd $CONCRETE_RELATIVE_GIT_DIRECTORY
+echo "$ cd $CONCRETE_SOURCE_DIR"
+cd $CONCRETE_SOURCE_DIR
 
 if [ -n "GATHER_PROJECTS" ]; then
   git remote set-head origin -d
@@ -11,11 +11,11 @@ if [ -n "GATHER_PROJECTS" ]; then
     echo "$ git checkout -B $branch"
     git checkout -B $branch
     
-    $CONCRETE_ROOT/run_pod_install.sh
+    $CONCRETE_STEP_DIR/run_pod_install.sh
 
-    echo "$ $CONCRETE_ROOT/find_schemes.sh"
-    $CONCRETE_ROOT/find_schemes.sh
+    echo "$ $CONCRETE_STEP_DIR/find_schemes.sh"
+    $CONCRETE_STEP_DIR/find_schemes.sh
   done
 else
-  $CONCRETE_ROOT/run_pod_install.sh
+  $CONCRETE_STEP_DIR/run_pod_install.sh
 fi
