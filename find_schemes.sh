@@ -19,10 +19,12 @@ do
 done
 
 # Get the project schemes
+projects_encoded=()
 for project in "${projects[@]}"
 do
   xcodebuild_output=()
   schemes=()
+  schemes_encoded=()
   parse_schemes=false
 
   IFS=$'\n'
@@ -37,6 +39,7 @@ do
   do
     if $parse_schemes; then
       schemes+=($line)
+      schemes_encoded+=($(echo $line | base64))
     fi
 
     if [[ $line == *"Schemes:"* ]]; then
@@ -50,7 +53,17 @@ do
     IFS=" "
     scheme_list="${schemes[*]}"
     unset IFS
+    echo "Found $project ($scheme_list)"
 
-    echo "$project ($scheme_list)"
+    IFS=","
+    encoded_scheme_list="${schemes_encoded[*]}"
+    unset IFS
+    projects_encoded+=($(echo "$project($encoded_scheme_list)"))
   fi
 done
+
+IFS=";"
+project_list_with_schemes="${projects_encoded[*]}"
+unset IFS
+
+export CONCRETE_SCHEMES=$project_list_with_schemes
