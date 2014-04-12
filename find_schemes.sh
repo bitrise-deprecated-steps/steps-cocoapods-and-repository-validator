@@ -58,7 +58,7 @@ do
     IFS=","
     encoded_scheme_list="${schemes_encoded[*]}"
     unset IFS
-    echo "$project (encoded_scheme_list)" >> ~/.schemes
+    echo "$project ($encoded_scheme_list)" >> ~/.schemes
   fi
 done
 
