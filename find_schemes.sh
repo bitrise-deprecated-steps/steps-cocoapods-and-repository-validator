@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # find project or workspace directories
+branch=$1
 projects=()
+
 for path in $(find . -type d -name '*.xcodeproj' -or -name '*.xcworkspace')
 do
 
@@ -58,7 +60,7 @@ do
     IFS=","
     encoded_scheme_list="${schemes_encoded[*]}"
     unset IFS
-    echo "$project ($encoded_scheme_list)" >> ~/.schemes
+    echo "$(echo $branch | base64),$(echo $project | base64),$encoded_scheme_list" >> ~/.schemes
   fi
 done
 

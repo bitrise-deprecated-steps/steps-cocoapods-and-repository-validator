@@ -14,7 +14,7 @@ if [ -n "$GATHER_PROJECTS" ]; then
     $CONCRETE_STEP_DIR/run_pod_install.sh
 
     echo "$ $CONCRETE_STEP_DIR/find_schemes.sh"
-    $CONCRETE_STEP_DIR/find_schemes.sh
+    $CONCRETE_STEP_DIR/find_schemes.sh "$branch"
   done
 else
   $CONCRETE_STEP_DIR/run_pod_install.sh
