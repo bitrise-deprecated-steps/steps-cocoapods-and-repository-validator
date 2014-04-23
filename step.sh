@@ -10,11 +10,14 @@ if [ -n "$GATHER_PROJECTS" ]; then
   do
     echo "$ git checkout -B $branch"
     git checkout -B $branch
+    # remove the prefix "origin/" from the branch name
+    branch_without_remote=$(echo "$branch" | cut -c 8-)
+    echo "Local branch: $branch_without_remote"
     
     $CONCRETE_STEP_DIR/run_pod_install.sh
 
     echo "$ $CONCRETE_STEP_DIR/find_schemes.sh"
-    $CONCRETE_STEP_DIR/find_schemes.sh "$branch"
+    $CONCRETE_STEP_DIR/find_schemes.sh "$branch_without_remote"
   done
 else
   $CONCRETE_STEP_DIR/run_pod_install.sh
