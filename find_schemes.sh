@@ -41,7 +41,7 @@ do
   do
     if $parse_schemes; then
       schemes+=($line)
-      schemes_encoded+=($(echo $line | base64))
+      schemes_encoded+=($(printf "%s" "$line" | base64))
     fi
 
     if [[ $line == *"Schemes:"* ]]; then
@@ -60,7 +60,7 @@ do
     IFS=","
     encoded_scheme_list="${schemes_encoded[*]}"
     unset IFS
-    echo "$(echo $branch | base64),$(echo $project | base64),$encoded_scheme_list" >> ~/.schemes
+    echo "$(printf "%s" "$branch" | base64),$(printf "%s" "$project" | base64),$encoded_scheme_list" >> ~/.schemes
     echo " [i] Final schemes info:"
     cat ~/.schemes
     echo " ---"
