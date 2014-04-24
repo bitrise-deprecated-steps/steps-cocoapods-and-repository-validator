@@ -61,9 +61,9 @@ do
     encoded_scheme_list="${schemes_encoded[*]}"
     unset IFS
     echo "$(printf "%s" "$branch" | base64),$(printf "%s" "$project" | base64),$encoded_scheme_list" >> ~/.schemes
-    echo " [i] Final schemes info:"
-    cat ~/.schemes
-    echo " ---"
+    #echo " [i] Final schemes info:"
+    #cat ~/.schemes
+    #echo " ---"
   fi
 done
 
