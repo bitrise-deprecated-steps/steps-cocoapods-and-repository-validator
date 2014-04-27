@@ -4,6 +4,8 @@ echo "$ cd $CONCRETE_SOURCE_DIR"
 cd $CONCRETE_SOURCE_DIR
 
 if [ -n "$GATHER_PROJECTS" ]; then
+  rm ~/.schemes
+  
   git remote set-head origin -d
 
   for branch in $(git branch -r); 
