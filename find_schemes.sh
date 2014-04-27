@@ -4,21 +4,23 @@
 branch=$1
 projects=()
 
+IFS=$'\n'
 for path in $(find . -type d -name '*.xcodeproj' -or -name '*.xcworkspace')
 do
 
   already_stored=false
   for project in $projects
   do
-    if [[ $path == $project* ]]; then
+    if [[ "$path" == "$project*" ]]; then
       already_stored=true
     fi
   done
 
   if ! $already_stored; then
-    projects+=($path)
+    projects+=("$path")
   fi
 done
+unset IFS
 
 # Get the project schemes
 projects_encoded=()
@@ -30,10 +32,10 @@ do
   parse_schemes=false
 
   IFS=$'\n'
-  if [[ $project == *".xcodeproj" ]]; then
-    xcodebuild_output=($(xcodebuild -list -project $project))
+  if [[ "$project" == *".xcodeproj" ]]; then
+    xcodebuild_output=($(xcodebuild -list -project "$project"))
   else
-    xcodebuild_output=($(xcodebuild -list -workspace $project))
+    xcodebuild_output=($(xcodebuild -list -workspace "$project"))
   fi
   unset IFS
 
@@ -60,6 +62,7 @@ do
     IFS=","
     encoded_scheme_list="${schemes_encoded[*]}"
     unset IFS
+    rm ~/.schemes
     echo "$(printf "%s" "$branch" | base64),$(printf "%s" "$project" | base64),$encoded_scheme_list" >> ~/.schemes
     #echo " [i] Final schemes info:"
     #cat ~/.schemes
