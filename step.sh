@@ -2,6 +2,10 @@
 
 echo "$ cd $CONCRETE_SOURCE_DIR"
 cd $CONCRETE_SOURCE_DIR
+if [ $? -ne 0 ]; then
+  echo "[!] Can't cd into the source folder!"
+  exit 1
+fi
 
 if [ -n "$GATHER_PROJECTS" ]; then
   rm ~/.schemes
