@@ -8,7 +8,8 @@ if [ $? -ne 0 ]; then
 fi
 
 if [ -n "$GATHER_PROJECTS" ]; then
-  rm ~/.schemes
+  # create an empty ~/.schemes file
+  echo "" > ~/.schemes
   
   git remote set-head origin -d
 
