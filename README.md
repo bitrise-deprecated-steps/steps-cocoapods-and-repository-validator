@@ -2,6 +2,6 @@ steps-cocapods-and-repository-validator
 =======================================
 
 # Environment
-- CONCRETE_SOURCE_DIR
+- BITRISE_SOURCE_DIR
 - GATHER_PROJECTS
-- CONCRETE_STEP_DIR
+- BITRISE_STEP_DIR

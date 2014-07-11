@@ -1,15 +1,15 @@
 ---
 name: Run CocoaPods (pod install) and optionally gather information about the project files.
 description: |
-  Concrete step to deploy an iOS application to Testflight. First, you have to register at https://www.testflightapp.com/ . You also have to create the required tokens.
+  Bitrise step to deploy an iOS application to Testflight. First, you have to register at https://www.testflightapp.com/ . You also have to create the required tokens.
 
 inputs:
   - title: |
       Source Code Directory path.
-    mapped_to: CONCRETE_SOURCE_DIR
+    mapped_to: BITRISE_SOURCE_DIR
   - title: |
       Gather Projects (for validation)? - Leave it empty to don't gather projects.
     mapped_to: GATHER_PROJECTS
   - title: |
       Directory of this Step - to find the helper bash scripts.
-    mapped_to: CONCRETE_STEP_DIR
+    mapped_to: BITRISE_STEP_DIR
