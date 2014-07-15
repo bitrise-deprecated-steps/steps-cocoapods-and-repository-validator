@@ -41,6 +41,8 @@ do
 
   for line in "${xcodebuild_output[@]}"
   do
+    # trimming
+    #  source: http://stackoverflow.com/a/3232433/974381
     trimmed_line=$([[ "$line" =~ [[:space:]]*([^[:space:]]|[^[:space:]].*[^[:space:]])[[:space:]]* ]]; echo -n "${BASH_REMATCH[1]}")
     if $parse_schemes; then
       schemes+=($trimmed_line)
