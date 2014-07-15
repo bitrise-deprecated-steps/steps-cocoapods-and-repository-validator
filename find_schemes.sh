@@ -41,12 +41,13 @@ do
 
   for line in "${xcodebuild_output[@]}"
   do
+    trimmed_line=$([[ "$line" =~ [[:space:]]*([^[:space:]]|[^[:space:]].*[^[:space:]])[[:space:]]* ]]; echo -n "${BASH_REMATCH[1]}")
     if $parse_schemes; then
-      schemes+=($line)
-      schemes_encoded+=($(printf "%s" "$line" | base64))
+      schemes+=($trimmed_line)
+      schemes_encoded+=($(printf "%s" "$trimmed_line" | base64))
     fi
 
-    if [[ $line == *"Schemes:"* ]]; then
+    if [[ $trimmed_line == *"Schemes:"* ]]; then
       parse_schemes=true
     fi
   done
