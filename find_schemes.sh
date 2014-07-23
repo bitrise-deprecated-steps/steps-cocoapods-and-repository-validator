@@ -11,8 +11,9 @@ do
   already_stored=false
   for project in $projects
   do
-    if [[ "$path" == "$project*" ]]; then
+    if [[ "$path" == "$project"* ]]; then
       already_stored=true
+      echo " (i) project found as sub directory in another project / workspace directory - skipping: $path"
     fi
   done
 
