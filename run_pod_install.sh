@@ -31,3 +31,4 @@ done
 unset IFS
 echo " (i) Found Podfile count: $podcount"
 write_section_to_formatted_output "**${podcount} podfiles installed**"
+write_section_to_formatted_output "# Podfiles installed successful"
