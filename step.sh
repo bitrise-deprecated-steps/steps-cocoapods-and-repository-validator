@@ -1,9 +1,37 @@
 #!/bin/bash
 
+formatted_output_file_path="$BITRISE_STEP_FORMATTED_OUTPUT_FILE_PATH"
+
+function echo_string_to_formatted_output {
+  echo "$1" >> "${formatted_output_file_path}"
+}
+
+function write_section_to_formatted_output {
+  echo '' >> "${formatted_output_file_path}"
+  echo "$1" >> "${formatted_output_file_path}"
+  echo '' >> "${formatted_output_file_path}"
+}
+
+if [ "${BITRISE_SOURCE_DIR}" == "" ]; then
+  echo "BITRISE_SOURCE_DIR is missing"
+  write_section_to_formatted_output "# Error!"
+  write_section_to_formatted_output "Reason: source directory is missing."
+  exit 1
+fi
+
 echo "$ cd $BITRISE_SOURCE_DIR"
 cd $BITRISE_SOURCE_DIR
 if [ $? -ne 0 ]; then
   echo "[!] Can't cd into the source folder!"
+  write_section_to_formatted_output "# Error!"
+  write_section_to_formatted_output "Reason: invalid source directory."
+  exit 1
+fi
+
+if [ ! -n "$BITRISE_STEP_DIR" ]; then
+  echo " [!] BITRISE_STEP_DIR is missing! Terminating..."
+  write_section_to_formatted_output "# Error!"
+  write_section_to_formatted_output "Reason: step directory is missing."
   exit 1
 fi
 
@@ -28,4 +56,9 @@ if [ -n "$GATHER_PROJECTS" ]; then
   done
 else
   $BITRISE_STEP_DIR/run_pod_install.sh
+  if [ $? -ne 0 ]; then
+    echo " [!] Pod install failed!"
+    write_section_to_formatted_output "# Pod install failed!"
+    exit 1
+  fi
 fi
