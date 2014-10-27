@@ -1,64 +1,42 @@
 #!/bin/bash
 
-formatted_output_file_path="$BITRISE_STEP_FORMATTED_OUTPUT_FILE_PATH"
+THIS_SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "${THIS_SCRIPTDIR}/_utils.sh"
+source "${THIS_SCRIPTDIR}/_formatted_output.sh"
 
-function echo_string_to_formatted_output {
-  echo "$1" >> "${formatted_output_file_path}"
-}
+# init / cleanup the formatted output
+echo "" > "${formatted_output_file_path}"
 
-function write_section_to_formatted_output {
-  echo '' >> "${formatted_output_file_path}"
-  echo "$1" >> "${formatted_output_file_path}"
-  echo '' >> "${formatted_output_file_path}"
-}
 
-if [ "${BITRISE_SOURCE_DIR}" == "" ]; then
-  echo "BITRISE_SOURCE_DIR is missing"
-  write_section_to_formatted_output "# Error!"
-  write_section_to_formatted_output "Reason: source directory is missing."
+
+if [ -z "${BITRISE_SOURCE_DIR}" ]; then
+  write_section_to_formatted_output "# Error"
+  write_section_start_to_formatted_output '* BITRISE_SOURCE_DIR input is missing'
   exit 1
 fi
 
-echo "$ cd $BITRISE_SOURCE_DIR"
-cd $BITRISE_SOURCE_DIR
-if [ $? -ne 0 ]; then
-  echo "[!] Can't cd into the source folder!"
-  write_section_to_formatted_output "# Error!"
-  write_section_to_formatted_output "Reason: invalid source directory."
-  exit 1
-fi
+print_and_do_command_exit_on_error cd "${BITRISE_SOURCE_DIR}"
 
-if [ ! -n "$BITRISE_STEP_DIR" ]; then
-  echo " [!] BITRISE_STEP_DIR is missing! Terminating..."
-  write_section_to_formatted_output "# Error!"
-  write_section_to_formatted_output "Reason: step directory is missing."
-  exit 1
-fi
-
-if [ -n "$GATHER_PROJECTS" ]; then
-  # create an empty ~/.schemes file
+if [ -n "${GATHER_PROJECTS}" ]; then
+  write_section_to_formatted_output "## Gathering project configurations"
+  # create/cleanup ~/.schemes file
   echo "" > ~/.schemes
   
-  git remote set-head origin -d
+  print_and_do_command_exit_on_error git remote set-head origin -d
 
   for branch in $(git branch -r); 
   do
-    echo "$ git checkout -B $branch"
-    git checkout -B $branch
+    print_and_do_command_exit_on_error git checkout -B ${branch}
     # remove the prefix "origin/" from the branch name
-    branch_without_remote=$(printf "%s" "$branch" | cut -c 8-)
-    echo "Local branch: $branch_without_remote"
+    branch_without_remote=$(printf "%s" "${branch}" | cut -c 8-)
+    echo "Local branch: ${branch_without_remote}"
     
-    $BITRISE_STEP_DIR/run_pod_install.sh
-
-    echo "$ $BITRISE_STEP_DIR/find_schemes.sh"
-    $BITRISE_STEP_DIR/find_schemes.sh "$branch_without_remote"
+    print_and_do_command_exit_on_error bash "${THIS_SCRIPTDIR}/run_pod_install.sh"
+    print_and_do_command_exit_on_error bash "${THIS_SCRIPTDIR}/find_schemes.sh" "${branch_without_remote}"
   done
 else
-  $BITRISE_STEP_DIR/run_pod_install.sh
-  if [ $? -ne 0 ]; then
-    echo " [!] Pod install failed!"
-    write_section_to_formatted_output "# Pod install failed!"
-    exit 1
-  fi
+  write_section_to_formatted_output "## Run only pod install"
+  print_and_do_command_exit_on_error bash "${THIS_SCRIPTDIR}/run_pod_install.sh"
 fi
+
+exit 0

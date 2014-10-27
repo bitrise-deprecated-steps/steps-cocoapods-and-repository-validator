@@ -1,34 +1,27 @@
 #!/bin/bash
 
-formatted_output_file_path="$BITRISE_STEP_FORMATTED_OUTPUT_FILE_PATH"
+THIS_SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "${THIS_SCRIPTDIR}/_utils.sh"
+source "${THIS_SCRIPTDIR}/_formatted_output.sh"
 
-function echo_string_to_formatted_output {
-  echo "$1" >> $formatted_output_file_path
-}
 
-function write_section_to_formatted_output {
-  echo '' >> $formatted_output_file_path
-  echo "$1" >> $formatted_output_file_path
-  echo '' >> $formatted_output_file_path
-}
+write_section_to_formatted_output "### Searching for podfiles and installing the found ones"
 
 podcount=0
 IFS=$'\n'
 for podfile in $(find . -type f -name 'Podfile')
 do
   podcount=$[podcount + 1]
-  echo " (i) Podfile found at: $podfile"
-  echo " (i) Podfile directory: $(dirname "$podfile")"
-  echo "$ (cd $(dirname "$podfile") && pod install)"
-  (cd $(dirname "$podfile") && pod install)
+  echo " (i) Podfile found at: ${podfile}"
+  curr_podfile_dir=$(dirname "${podfile}")
+  echo " (i) Podfile directory: ${curr_podfile_dir}"
+
+  (cd "${curr_podfile_dir}" && pod install)
   if [ $? -ne 0 ]; then
-    echo " [!] Could not pod install: ${podfile}"
     write_section_to_formatted_output "Could not install podfile: ${podfile}"
     exit 1
   fi
-  write_section_to_formatted_output "Installed podfile: ${podfile}"
+  echo_string_to_formatted_output "* Installed podfile: ${podfile}"
 done
 unset IFS
-echo " (i) Found Podfile count: $podcount"
-write_section_to_formatted_output "**${podcount} podfiles installed**"
-write_section_to_formatted_output "# Podfiles installed successful"
+write_section_to_formatted_output "**${podcount} podfile(s) found and installed**"
