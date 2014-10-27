@@ -22,9 +22,6 @@ inputs:
       Gather Projects (for validation)? - Leave it empty to don't gather projects.
     mapped_to: GATHER_PROJECTS
   - title: |
-      Directory of this Step - to find the helper bash scripts.
-    mapped_to: BITRISE_STEP_DIR
-  - title: |
       Is update the installed CocoaPods version before using it.
       Possible values: "true" and "false". True is the default.
     mapped_to: IS_UPDATE_COCOAPODS
