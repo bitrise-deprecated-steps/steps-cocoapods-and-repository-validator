@@ -17,6 +17,13 @@ fi
 
 print_and_do_command_exit_on_error cd "${BITRISE_SOURCE_DIR}"
 
+# Update Cocoapods
+if [[ "${IS_UPDATE_COCOAPODS}" != "false" ]] ; then
+  print_and_do_command_exit_on_error bash "${THIS_SCRIPTDIR}/steps-cocoapods-update/step.sh"
+else
+  write_section_to_formatted_output "*Skipping Cocoapods version update, the input IS_UPDATE_COCOAPODS was false*"
+fi
+
 if [ -n "${GATHER_PROJECTS}" ]; then
   write_section_to_formatted_output "## Gathering project configurations"
   # create/cleanup ~/.schemes file
