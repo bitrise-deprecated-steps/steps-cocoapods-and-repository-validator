@@ -1,7 +1,8 @@
 ---
 name: Run CocoaPods and gather information about Xcode projects.
 description: |
-  Run CocoaPods (pod install) and (optionally) gather information about Xcode project files.
+  Run CocoaPods (pod install) and (optionally) scan Xcode project files
+  for valid Xcode command line configurations.
 
 website: https://github.com/bitrise-io/steps-cocoapods-and-repository-validator
 source:
@@ -19,9 +20,9 @@ inputs:
       Source Code Directory path.
     mapped_to: BITRISE_SOURCE_DIR
   - title: |
-      Gather Projects (for validation)? - Leave it empty to don't gather projects.
+      Scan for project configurations? - Leave it empty to don't.
     mapped_to: GATHER_PROJECTS
   - title: |
-      Is update the installed CocoaPods version before using it.
-      Possible values: "true" and "false". True is the default.
+      Should update the installed CocoaPods version before using it?
+      Possible values: "true" and "false". true is the default.
     mapped_to: IS_UPDATE_COCOAPODS
