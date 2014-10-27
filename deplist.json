@@ -1,0 +1,8 @@
+{
+	"deps": [
+		{
+			"url": "https://github.com/bitrise-io/steps-cocoapods-update.git",
+			"store_path": "steps-cocoapods-update"
+		}
+	]
+}
