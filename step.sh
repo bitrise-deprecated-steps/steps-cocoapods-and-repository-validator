@@ -21,11 +21,11 @@ print_and_do_command_exit_on_error cd "${BITRISE_SOURCE_DIR}"
 if [[ "${IS_UPDATE_COCOAPODS}" != "false" ]] ; then
   print_and_do_command_exit_on_error bash "${THIS_SCRIPTDIR}/steps-cocoapods-update/step.sh"
 else
-  write_section_to_formatted_output "*Skipping Cocoapods version update, the input IS_UPDATE_COCOAPODS was false*"
+  write_section_to_formatted_output "*Skipping Cocoapods version update*"
 fi
 
 if [ -n "${GATHER_PROJECTS}" ]; then
-  write_section_to_formatted_output "## Gathering project configurations"
+  write_section_to_formatted_output "# Gathering project configurations"
   # create/cleanup ~/.schemes file
   echo "" > ~/.schemes
   
@@ -42,7 +42,7 @@ if [ -n "${GATHER_PROJECTS}" ]; then
     print_and_do_command_exit_on_error bash "${THIS_SCRIPTDIR}/find_schemes.sh" "${branch_without_remote}"
   done
 else
-  write_section_to_formatted_output "## Run only pod install"
+  write_section_to_formatted_output "# Run pod install"
   print_and_do_command_exit_on_error bash "${THIS_SCRIPTDIR}/run_pod_install.sh"
 fi
 
