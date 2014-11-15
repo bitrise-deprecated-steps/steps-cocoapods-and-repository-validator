@@ -9,7 +9,7 @@ write_section_to_formatted_output "### Searching for podfiles and installing the
 
 podcount=0
 IFS=$'\n'
-for podfile in $(find . -type f -name 'Podfile')
+for podfile in $(find . -type f -iname 'Podfile')
 do
   podcount=$[podcount + 1]
   echo " (i) Podfile found at: ${podfile}"
