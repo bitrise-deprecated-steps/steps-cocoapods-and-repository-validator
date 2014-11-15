@@ -66,7 +66,9 @@ puts
 puts "-> Fixing sources in #{options[:podfile_path]}"
 puts
 
-File.open(options[:podfile_path], 'r').each_line do |line|
+podfile_abs_path = File.expand_path(options[:podfile_path])
+puts " (i) podfile_abs_path: #{podfile_abs_path}"
+File.open(podfile_abs_path, 'r').each_line do |line|
   line_strip = line.strip
   parts = line_strip.split(' ')
   if parts.size >= 2 && parts[0].downcase == 'source'
