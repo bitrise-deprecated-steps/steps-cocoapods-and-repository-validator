@@ -43,7 +43,13 @@ puts "-----------"
 
 def pod_add_repo(repo_url_string, repo_alias_name)
   fix_cmd_str = "pod repo add #{repo_alias_name} #{repo_url_string}"
-  puts " (i) Apply command: $ #{fix_cmd_str}"
+
+  # remove previously applied fix - if this fix script
+  #  would be called multiple times
+  system("rm -rf #{ENV['HOME']}/.cocoapods/repos/#{repo_alias_name}")
+
+  # apply fix
+  puts " (i) Apply fix command: $ #{fix_cmd_str}"
   unless system(fix_cmd_str)
     raise "Failed to add pod spec repo: #{repo_url_string}"
   end
