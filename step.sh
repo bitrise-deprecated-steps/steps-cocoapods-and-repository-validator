@@ -31,8 +31,11 @@ if [ -n "${GATHER_PROJECTS}" ]; then
   
   print_and_do_command_exit_on_error git remote set-head origin -d
 
-  for branch in $(git branch -r); 
+  detected_branches=$(git branch -r)
+  echo " (i) detected_branches: ${detected_branches}"
+  for branch in ${detected_branches}; 
   do
+    echo "-> Switching to branch: ${branch}"
     print_and_do_command_exit_on_error git checkout -B "${branch}"
     # remove the prefix "origin/" from the branch name
     branch_without_remote=$(printf "%s" "${branch}" | cut -c 8-)
@@ -40,6 +43,7 @@ if [ -n "${GATHER_PROJECTS}" ]; then
     
     print_and_do_command_exit_on_error bash "${THIS_SCRIPTDIR}/run_pod_install.sh"
     print_and_do_command_exit_on_error bash "${THIS_SCRIPTDIR}/find_schemes.sh" "${branch_without_remote}"
+    echo "-> Finished on branch: ${branch}"
   done
 else
   write_section_to_formatted_output "# Run pod install"
