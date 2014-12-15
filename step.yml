@@ -3,7 +3,6 @@ name: Run CocoaPods and gather information about Xcode projects.
 description: |
   Run CocoaPods (pod install) and (optionally) scan Xcode project files
   for valid Xcode command line configurations.
-
 website: https://github.com/bitrise-io/steps-cocoapods-and-repository-validator
 source:
   git: https://github.com/bitrise-io/steps-cocoapods-and-repository-validator.git
