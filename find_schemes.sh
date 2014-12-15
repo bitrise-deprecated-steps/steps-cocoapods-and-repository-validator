@@ -80,9 +80,9 @@ do
     echo "-> Store found project configurations information to file..."
     echo "$(printf "%s" "$branch" | base64),$(printf "%s" "$project" | base64),$encoded_scheme_list" >> ~/.schemes
     echo "-> Found project configurations information stored."
-    echo " [i] Final schemes info:"
-    cat ~/.schemes
-    echo " ---"
+    # echo " [i] Final schemes info:"
+    # cat ~/.schemes
+    # echo " ---"
   fi
 done
 
