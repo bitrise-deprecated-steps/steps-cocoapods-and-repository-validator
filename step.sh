@@ -33,7 +33,7 @@ if [ -n "${GATHER_PROJECTS}" ]; then
 
   for branch in $(git branch -r); 
   do
-    print_and_do_command_exit_on_error git checkout -B ${branch}
+    print_and_do_command_exit_on_error git checkout -B "${branch}"
     # remove the prefix "origin/" from the branch name
     branch_without_remote=$(printf "%s" "${branch}" | cut -c 8-)
     echo "Local branch: ${branch_without_remote}"

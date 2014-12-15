@@ -77,7 +77,9 @@ do
     IFS=","
     encoded_scheme_list="${schemes_encoded[*]}"
     unset IFS
+    write_section_to_formatted_output "-> Store found project configurations information to file..."
     echo "$(printf "%s" "$branch" | base64),$(printf "%s" "$project" | base64),$encoded_scheme_list" >> ~/.schemes
+    write_section_to_formatted_output "-> Found project configurations information stored."
     #echo " [i] Final schemes info:"
     #cat ~/.schemes
     #echo " ---"
