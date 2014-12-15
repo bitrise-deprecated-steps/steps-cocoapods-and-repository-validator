@@ -35,6 +35,8 @@ write_section_to_formatted_output "### Scanning configurations in found project 
 projects_encoded=()
 for project in "${projects[@]}"
 do
+  echo "-> Inspecting project: ${project}"
+  
   xcodebuild_output=()
   schemes=()
   schemes_encoded=()
@@ -79,7 +81,7 @@ do
     unset IFS
     echo "-> Store found project configurations information to file..."
     echo "$(printf "%s" "$branch" | base64),$(printf "%s" "$project" | base64),$encoded_scheme_list" >> ~/.schemes
-    echo "-> Found project configurations information stored."
+    echo "-> Found project configurations information stored for project: ${project}"
     # echo " [i] Final schemes info:"
     # cat ~/.schemes
     # echo " ---"
