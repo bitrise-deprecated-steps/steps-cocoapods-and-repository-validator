@@ -58,7 +58,7 @@ do
     # trimming
     #  source: http://stackoverflow.com/a/3232433/974381
     trimmed_line=$([[ "$line" =~ [[:space:]]*([^[:space:]]|[^[:space:]].*[^[:space:]])[[:space:]]* ]]; echo -n "${BASH_REMATCH[1]}")
-    echo " (i) trimmed_line: ${trimmed_line}"
+    echo "  (i) trimmed_line: ${trimmed_line}"
     if ${parse_schemes}; then
       schemes+=(${trimmed_line})
       schemes_encoded+=($(printf "%s" "${trimmed_line}" | base64))
