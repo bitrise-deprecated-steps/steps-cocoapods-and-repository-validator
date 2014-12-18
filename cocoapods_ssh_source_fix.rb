@@ -81,7 +81,7 @@ File.open(podfile_abs_path, 'r').each_line do |line|
       if uri_scheme == 'ssh'
         apply_source_fix(expected_uri_part)
       else
-        puts " * [no-fix] uri (#{uri}) should be handled by pod install, no fix."
+        puts " * [no-fix] uri (#{uri}) should be handled by pod install, no fix required."
       end
     rescue => ex
       puts " (i) URI could not be detected, applying fix. Exception was: #{ex}"

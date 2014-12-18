@@ -37,7 +37,7 @@ if [ -n "${GATHER_PROJECTS}" ]; then
   do
     echo "-> Switching to branch: ${branch}"
     # remove every file before switch; except the .git folder
-    find . -not -path '*.git/*' -not -path '*.git' -delete
+    print_and_do_command_exit_on_error find . -not -path '*.git/*' -not -path '*.git' -delete
     # switch to branch
     print_and_do_command_exit_on_error git checkout -f -B "${branch}"
     # remove the prefix "origin/" from the branch name
