@@ -28,10 +28,8 @@ if [ -n "${GATHER_PROJECTS}" ]; then
   write_section_to_formatted_output "# Gathering project configurations"
   # create/cleanup ~/.schemes file
   echo "" > ~/.schemes
-  
-  print_and_do_command_exit_on_error git remote set-head origin -d
 
-  detected_branches=$(git branch -r)
+  detected_branches=$(git branch -r | grep -v -- "->")
   echo " (i) detected_branches: ${detected_branches}"
   for branch in ${detected_branches} ; do
     echo "-> Switching to branch: ${branch}"
