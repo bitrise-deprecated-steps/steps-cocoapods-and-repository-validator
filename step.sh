@@ -47,6 +47,8 @@ if [ -n "${GATHER_PROJECTS}" ]; then
     # switch to branch
     print_and_do_command_exit_on_error git checkout -f "${branch_without_remote}"
 
+    write_section_to_formatted_output "### Switching to branch: ${branch_without_remote}"
+
     print_and_do_command_exit_on_error bash "${THIS_SCRIPTDIR}/run_pod_install.sh"
     print_and_do_command_exit_on_error bash "${THIS_SCRIPTDIR}/find_schemes.sh" "${branch_without_remote}"
     echo "-> Finished on branch: ${branch}"
