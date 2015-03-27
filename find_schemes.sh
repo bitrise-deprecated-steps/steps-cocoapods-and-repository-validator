@@ -4,11 +4,13 @@ THIS_SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "${THIS_SCRIPTDIR}/_utils.sh"
 source "${THIS_SCRIPTDIR}/_formatted_output.sh"
 
-write_section_to_formatted_output "### Searching for Xcode project files"
 
 # find project or workspace directories
-branch=$1
+branch="$1"
 projects=()
+
+write_section_to_formatted_output "### Searching for Xcode project files, on branch: ${branch}"
+
 
 IFS=$'\n'
 for path in $(find . -type d -name '*.xcodeproj' -or -name '*.xcworkspace')
@@ -36,7 +38,7 @@ projects_encoded=()
 for project in "${projects[@]}"
 do
   echo "-> Inspecting project: ${project}"
-  
+
   xcodebuild_output=()
   schemes=()
   schemes_encoded=()
@@ -92,4 +94,3 @@ do
     # echo " ---"
   fi
 done
-
