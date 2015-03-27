@@ -29,10 +29,16 @@ if [ -n "${GATHER_PROJECTS}" ]; then
   # create/cleanup ~/.schemes file
   echo "" > ~/.schemes
 
-  detected_branches=$(git branch -r | grep -v -- "->")
-  echo " (i) detected_branches: ${detected_branches}"
-  for branch in ${detected_branches} ; do
-    echo "-> Switching to branch: ${branch}"
+  if [ ! -z "${REPO_VALIDATOR_SINGLE_BRANCH}" ] ; then
+    branches_to_scan=("origin/${REPO_VALIDATOR_SINGLE_BRANCH}")
+  else
+    branches_to_scan=$(git branch -r | grep -v -- "->")
+  fi
+  echo " (i) branches_to_scan:"
+  echo "${branches_to_scan}"
+  for branch in ${branches_to_scan} ; do
+    echo
+    echo "==> Switching to branch: ${branch}"
     # remove every file before switch; except the .git folder
     print_and_do_command_exit_on_error find . -not -path '*.git/*' -not -path '*.git' -delete
     # remove the prefix "origin/" from the branch name
@@ -40,7 +46,7 @@ if [ -n "${GATHER_PROJECTS}" ]; then
     echo "Local branch: ${branch_without_remote}"
     # switch to branch
     print_and_do_command_exit_on_error git checkout -f "${branch_without_remote}"
-    
+
     print_and_do_command_exit_on_error bash "${THIS_SCRIPTDIR}/run_pod_install.sh"
     print_and_do_command_exit_on_error bash "${THIS_SCRIPTDIR}/find_schemes.sh" "${branch_without_remote}"
     echo "-> Finished on branch: ${branch}"

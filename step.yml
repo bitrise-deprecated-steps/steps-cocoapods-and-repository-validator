@@ -8,7 +8,6 @@ fork_url: https://github.com/bitrise-io/steps-cocoapods-and-repository-validator
 source:
   git: https://github.com/bitrise-io/steps-cocoapods-and-repository-validator.git
 host_os_tags:
-  - osx-10.9
   - osx-10.10
 project_type_tags:
   - ios
@@ -18,12 +17,12 @@ type_tags:
   - pod
 is_requires_admin_user: false
 inputs:
-  - 
+  -
     mapped_to: BITRISE_SOURCE_DIR
     title: "Source Code Directory path."
     is_expand: true
     is_required: true
-  - 
+  -
     mapped_to: GATHER_PROJECTS
     title: "Scan for project configurations?"
     description: |
@@ -31,7 +30,7 @@ inputs:
     value_options: ["", "yes"]
     value: ""
     is_expand: false
-  - 
+  -
     mapped_to: IS_UPDATE_COCOAPODS
     title: "Update CocoaPods version?"
     description: |
@@ -40,3 +39,11 @@ inputs:
     value: "true"
     is_expand: false
     is_required: true
+  -
+    mapped_to: REPO_VALIDATOR_SINGLE_BRANCH
+    title: "Scan only a single branch"
+    description: |
+       If this parameter is provided then only the specified branch
+       will be scanned, all other branches will be ignored.
+    value: ""
+    is_expand: false
