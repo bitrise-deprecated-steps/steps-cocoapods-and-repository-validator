@@ -30,8 +30,10 @@ if [ -n "${GATHER_PROJECTS}" ]; then
   echo "" > ~/.schemes
 
   if [ ! -z "${REPO_VALIDATOR_SINGLE_BRANCH}" ] ; then
+    write_section_to_formatted_output "*Scanning a single branch: ${REPO_VALIDATOR_SINGLE_BRANCH}*"
     branches_to_scan=("origin/${REPO_VALIDATOR_SINGLE_BRANCH}")
   else
+    write_section_to_formatted_output "*Scanning all branches*"
     branches_to_scan=$(git branch -r | grep -v -- "->")
   fi
   echo " (i) branches_to_scan:"
