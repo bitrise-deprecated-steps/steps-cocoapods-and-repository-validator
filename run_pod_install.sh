@@ -18,7 +18,7 @@ do
   curr_podfile_basename=$(basename "${podfile}")
   echo " (i) Podfile directory: ${curr_podfile_dir}"
 
-  (cd "${curr_podfile_dir}" && ruby "${CONFIG_cocoapods_ssh_source_fix_script_path}" --podfile="${curr_podfile_basename}" && pod install)
+  (cd "${curr_podfile_dir}" && ruby "${CONFIG_cocoapods_ssh_source_fix_script_path}" --podfile="${curr_podfile_basename}" && pod install --verbose)
   if [ $? -ne 0 ] ; then
     write_section_to_formatted_output "Could not install podfile: ${podfile}"
     exit 1
