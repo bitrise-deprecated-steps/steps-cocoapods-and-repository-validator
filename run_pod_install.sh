@@ -13,12 +13,14 @@ IFS=$'\n'
 for podfile in $(find . -type f -iname 'Podfile')
 do
   podcount=$[podcount + 1]
-  echo " ====> Podfile found at: ${podfile}"
+  echo " (i) Podfile found at: ${podfile}"
   curr_podfile_dir=$(dirname "${podfile}")
   curr_podfile_basename=$(basename "${podfile}")
   echo " (i) Podfile directory: ${curr_podfile_dir}"
 
   (
+    echo
+    echo " ===> Pod install: ${podfile}"
     cd "${curr_podfile_dir}"
     fail_if_cmd_error "Failed to cd into dir: ${curr_podfile_dir}"
     ruby "${CONFIG_cocoapods_ssh_source_fix_script_path}" --podfile="${curr_podfile_basename}"
