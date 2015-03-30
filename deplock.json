@@ -2,7 +2,7 @@
 	"dep_locks": [
 		{
 			"url": "https://github.com/bitrise-io/steps-cocoapods-update.git",
-			"revision": "998b2e2d213eb9974b1bca7ed57d7e9db1260750"
+			"revision": "a84fa4c4b80e845a06f3bb7a53c95c6bcc8096f9"
 		}
 	]
 }
