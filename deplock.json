@@ -3,6 +3,10 @@
 		{
 			"url": "https://github.com/bitrise-io/steps-cocoapods-update.git",
 			"revision": "a84fa4c4b80e845a06f3bb7a53c95c6bcc8096f9"
+		},
+		{
+			"url": "https://github.com/bitrise-io/steps-utils-bash-toolkit.git",
+			"revision": "1e3af9647d8ae5f1c48b2eb0549a06c71f9defad"
 		}
 	]
 }
