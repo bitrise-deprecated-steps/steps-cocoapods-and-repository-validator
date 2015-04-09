@@ -48,6 +48,8 @@ if [ -n "${GATHER_PROJECTS}" ]; then
     echo "Local branch: ${branch_without_remote}"
     # switch to branch
     print_and_do_command_exit_on_error git checkout -f "${branch_without_remote}"
+    print_and_do_command_exit_on_error git submodule foreach git reset --hard
+    print_and_do_command_exit_on_error git submodule update --init --recursive
 
     write_section_to_formatted_output "### Switching to branch: ${branch_without_remote}"
 
