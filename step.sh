@@ -47,9 +47,12 @@ if [ -n "${GATHER_PROJECTS}" ]; then
     branch_without_remote=$(printf "%s" "${branch}" | cut -c 8-)
     echo "Local branch: ${branch_without_remote}"
     # switch to branch
-    print_and_do_command_exit_on_error git checkout -f "${branch_without_remote}"
-    print_and_do_command_exit_on_error git submodule foreach git reset --hard
-    print_and_do_command_exit_on_error git submodule update --init --recursive
+    GIT_ASKPASS=echo GIT_SSH="${THIS_SCRIPTDIR}/ssh_no_prompt.sh" git checkout -f "${branch_without_remote}"
+    fail_if_cmd_error "Failed to checkout branch: ${branch_without_remote}"
+    GIT_ASKPASS=echo GIT_SSH="${THIS_SCRIPTDIR}/ssh_no_prompt.sh" git submodule foreach git reset --hard
+    fail_if_cmd_error "Failed to reset submodules"
+    GIT_ASKPASS=echo GIT_SSH="${THIS_SCRIPTDIR}/ssh_no_prompt.sh" git submodule update --init --recursive
+    fail_if_cmd_error "Failed to update submodules"
 
     write_section_to_formatted_output "### Switching to branch: ${branch_without_remote}"
 
