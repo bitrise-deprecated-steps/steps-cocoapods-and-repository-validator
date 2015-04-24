@@ -3,10 +3,10 @@
 THIS_SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "${THIS_SCRIPTDIR}/_bash_utils/utils.sh"
 source "${THIS_SCRIPTDIR}/_bash_utils/formatted_output.sh"
+source "${THIS_SCRIPTDIR}/_setup.sh"
 
 # init / cleanup the formatted output
 echo "" > "${formatted_output_file_path}"
-
 
 
 if [ -z "${BITRISE_SOURCE_DIR}" ]; then
@@ -38,6 +38,11 @@ if [ -n "${GATHER_PROJECTS}" ]; then
   fi
   echo " (i) branches_to_scan:"
   echo "${branches_to_scan}"
+  set -e
+  echo "===> Setting up gather-projects dependencies..."
+  SetupGatherProjectsDependencies
+  echo "<=== Dependency setup completed."
+  set +e
   for branch in ${branches_to_scan} ; do
     echo
     echo "==> Switching to branch: ${branch}"

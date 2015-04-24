@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -v
-
 THIS_SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "${THIS_SCRIPTDIR}/_bash_utils/utils.sh"
 source "${THIS_SCRIPTDIR}/_bash_utils/formatted_output.sh"
@@ -48,9 +46,9 @@ do
 
   IFS=$'\n'
   if [[ "${project}" == *".xcodeproj" ]]; then
-    xcodebuild_output=($(xcodebuild -list -project "${project}"))
+    xcodebuild_output=($(gtimeout 20 xcodebuild -list -project "${project}"))
   else
-    xcodebuild_output=($(xcodebuild -list -workspace "${project}"))
+    xcodebuild_output=($(gtimeout 20 xcodebuild -list -workspace "${project}"))
   fi
   unset IFS
 
