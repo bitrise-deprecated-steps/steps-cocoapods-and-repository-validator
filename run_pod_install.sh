@@ -25,7 +25,13 @@ do
     fail_if_cmd_error "Failed to cd into dir: ${curr_podfile_dir}"
     ruby "${CONFIG_cocoapods_ssh_source_fix_script_path}" --podfile="${curr_podfile_basename}"
     fail_if_cmd_error "Failed to fix Podfile: ${curr_podfile_basename}"
-    pod install --verbose
+    
+    if [ -f Gemfile ]; then
+      bundle install --verbose
+      bundle exec pod install --verbose
+    else
+      pod install --verbose
+    fi
     fail_if_cmd_error "Failed to pod install"
   )
   if [ $? -ne 0 ] ; then
