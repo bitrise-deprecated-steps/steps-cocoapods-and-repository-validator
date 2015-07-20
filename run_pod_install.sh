@@ -26,13 +26,15 @@ do
     ruby "${CONFIG_cocoapods_ssh_source_fix_script_path}" --podfile="${curr_podfile_basename}"
     fail_if_cmd_error "Failed to fix Podfile: ${curr_podfile_basename}"
     
-    if [ -f Gemfile ]; then
+    if [ -f './Gemfile' ] ; then
       bundle install --verbose
+      fail_if_cmd_error "Failed to bundle install"
       bundle exec pod install --verbose
+      fail_if_cmd_error "Failed to pod install"
     else
       pod install --verbose
+      fail_if_cmd_error "Failed to pod install"
     fi
-    fail_if_cmd_error "Failed to pod install"
   )
   if [ $? -ne 0 ] ; then
     write_section_to_formatted_output "Could not install podfile: ${podfile}"
