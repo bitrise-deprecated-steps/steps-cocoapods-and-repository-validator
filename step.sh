@@ -9,29 +9,29 @@ source "${THIS_SCRIPTDIR}/_setup.sh"
 echo "" > "${formatted_output_file_path}"
 
 
-if [ -z "${BITRISE_SOURCE_DIR}" ]; then
+if [ -z "${source_root_path}" ]; then
   write_section_to_formatted_output "# Error"
-  write_section_start_to_formatted_output '* BITRISE_SOURCE_DIR input is missing'
+  write_section_start_to_formatted_output '* source_root_path input is missing'
   exit 1
 fi
 
 # Update Cocoapods
-if [[ "${IS_UPDATE_COCOAPODS}" != "false" ]] ; then
+if [[ "${is_update_cocoapods}" != "false" ]] ; then
   print_and_do_command_exit_on_error bash "${THIS_SCRIPTDIR}/steps-cocoapods-update/step.sh"
 else
   write_section_to_formatted_output "*Skipping Cocoapods version update*"
 fi
 
-print_and_do_command_exit_on_error cd "${BITRISE_SOURCE_DIR}"
+print_and_do_command_exit_on_error cd "${source_root_path}"
 
-if [ -n "${GATHER_PROJECTS}" ]; then
+if [[ "${gather_project_infos}" == "yes" ]]; then
   write_section_to_formatted_output "# Gathering project configurations"
   # create/cleanup ~/.schemes file
   echo "" > ~/.schemes
 
-  if [ ! -z "${REPO_VALIDATOR_SINGLE_BRANCH}" ] ; then
-    write_section_to_formatted_output "*Scanning a single branch: ${REPO_VALIDATOR_SINGLE_BRANCH}*"
-    branches_to_scan=("origin/${REPO_VALIDATOR_SINGLE_BRANCH}")
+  if [ ! -z "${scan_only_branch}" ] ; then
+    write_section_to_formatted_output "*Scanning a single branch: ${scan_only_branch}*"
+    branches_to_scan=("origin/${scan_only_branch}")
   else
     write_section_to_formatted_output "*Scanning all branches*"
     branches_to_scan=$(git branch -r | grep -v -- "->")

@@ -1,12 +1,13 @@
----
-name: "Run CocoaPods and gather information about Xcode projects."
+title: "Run CocoaPods and gather information about Xcode projects."
+summary: |
+  Run CocoaPods (pod install) and (optionally) scan Xcode project files
+  for valid Xcode command line configurations.
 description: |
   Run CocoaPods (pod install) and (optionally) scan Xcode project files
   for valid Xcode command line configurations.
 website: https://github.com/bitrise-io/steps-cocoapods-and-repository-validator
-fork_url: https://github.com/bitrise-io/steps-cocoapods-and-repository-validator
-source:
-  git: https://github.com/bitrise-io/steps-cocoapods-and-repository-validator.git
+source_code_url: https://github.com/bitrise-io/steps-cocoapods-and-repository-validator
+support_url: https://github.com/bitrise-io/steps-cocoapods-and-repository-validator/issues
 host_os_tags:
   - osx-10.10
 project_type_tags:
@@ -15,35 +16,37 @@ type_tags:
   - xcode
   - cocoapods
   - pod
+dependencies:
+  - manager: brew
+    name: coreutils
 is_requires_admin_user: false
+is_always_run: false
+is_skippable: false
 inputs:
-  -
-    mapped_to: BITRISE_SOURCE_DIR
-    title: "Source Code Directory path."
-    is_expand: true
-    is_required: true
-  -
-    mapped_to: GATHER_PROJECTS
-    title: "Scan for project configurations?"
-    description: |
-       Leave it empty to don't.
-    value_options: ["", "yes"]
-    value: ""
-    is_expand: false
-  -
-    mapped_to: IS_UPDATE_COCOAPODS
-    title: "Update CocoaPods version?"
-    description: |
-      Should update the installed CocoaPods version before using it?
-    value_options: ["true", "false"]
-    value: "true"
-    is_expand: false
-    is_required: true
-  -
-    mapped_to: REPO_VALIDATOR_SINGLE_BRANCH
-    title: "Scan only a single branch"
-    description: |
-       If this parameter is provided then only the specified branch
-       will be scanned, all other branches will be ignored.
-    value: ""
-    is_expand: false
+  - source_root_path:
+    opts:
+      title: "Source Code Directory path."
+      is_expand: true
+      is_required: true
+  - gather_project_infos: "yes"
+    opts:
+      title: "Scan for project configurations?"
+      description: |
+         Leave it empty to don't.
+      value_options: ["no", "yes"]
+      is_expand: false
+  - is_update_cocoapods: "true"
+    opts:
+      title: "Update CocoaPods version?"
+      description: |
+        Should update the installed CocoaPods version before using it?
+      value_options: ["true", "false"]
+      is_expand: false
+      is_required: true
+  - scan_only_branch: ""
+    opts:
+      title: "Scan only a single branch"
+      description: |
+         If this parameter is provided then only the specified branch
+         will be scanned, all other branches will be ignored.
+      is_expand: false
