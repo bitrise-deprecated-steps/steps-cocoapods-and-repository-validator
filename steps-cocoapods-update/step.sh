@@ -20,7 +20,7 @@ fi
 write_section_start_to_formatted_output "    ${pod_version}"
 
 print_and_do_command_exit_on_error gem update cocoapods
-print_and_do_command_exit_on_error pod setup
+print_and_do_command_exit_on_error pod setup --verbose
 
 write_section_start_to_formatted_output "## Cocoapods version after update"
 pod_version=$(pod --version)
