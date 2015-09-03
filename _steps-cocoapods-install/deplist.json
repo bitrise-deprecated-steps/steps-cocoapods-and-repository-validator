@@ -1,10 +1,6 @@
 {
 	"deps": [
 		{
-			"url": "https://github.com/bitrise-io/steps-cocoapods-install.git",
-			"store_path": "_steps-cocoapods-install"
-		},
-		{
 			"url": "https://github.com/bitrise-io/steps-cocoapods-update.git",
 			"store_path": "_steps-cocoapods-update"
 		},

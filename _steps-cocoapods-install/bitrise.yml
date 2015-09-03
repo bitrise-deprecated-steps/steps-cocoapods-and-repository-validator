@@ -10,14 +10,8 @@ workflows:
             #!/bin/bash
             set -e
             rm -rf ./_tmp
-            # => Includes Podfile
             git clone https://github.com/bitrise-io/sample-apps-ios-cocoapods.git ./_tmp
-            # => No Podfile, multiple branches
-            # git clone https://github.com/bitrise-io/sample-apps-ios-unit-test.git ./_tmp
-            # => No Podfile, single branch, Swift project
-            # git clone https://github.com/bitrise-io/sample-apps-ios-swift.git _tmp
     - path::./:
         inputs:
         - source_root_path: ./_tmp
         - is_update_cocoapods: "false"
-        - scan_only_branch: "master"
