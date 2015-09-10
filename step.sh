@@ -75,6 +75,8 @@ echo
 if [ ! -z "${scan_result_submit_url}" ] ; then
   set -e
   echo " => Submitting scan results..."
+  echo "scan_result_submit_url: ${scan_result_submit_url}"
+  echo "scan_result_submit_api_token: ${scan_result_submit_api_token}"
   curl --fail -X POST --data-urlencode "api_token=${scan_result_submit_api_token}" --data-urlencode "scan_results=$(cat ~/.schemes)" "${scan_result_submit_url}"
 else
   echo " => No scan_result_submit_url specified - skipping submit."
