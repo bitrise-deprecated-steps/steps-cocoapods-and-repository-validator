@@ -71,5 +71,16 @@ for branch in ${branches_to_scan} ; do
   echo "-> Finished on branch: ${branch}"
 done
 
+echo
+if [ ! -z "${scan_result_submit_url}" ] ; then
+  set -e
+  echo " => Submitting scan results..."
+  curl --fail -X POST --data-urlencode "api_token=${scan_result_submit_api_token}" --data-urlencode "scan_results=$(cat ~/.schemes)" "${scan_result_submit_url}"
+else
+  echo " => No scan_result_submit_url specified - skipping submit."
+fi
+
+echo
+echo "DONE"
 
 exit 0
