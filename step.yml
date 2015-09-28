@@ -1,8 +1,7 @@
 title: "Run CocoaPods and gather information about Xcode projects."
-summary: |
-  Run CocoaPods (pod install) and scan Xcode project files
-  for valid Xcode command line configurations.
-description: |
+summary: |-
+  Install the needed pods on the VM and gather the shared schemes with one Step.
+description: |-
   Run CocoaPods (pod install) and scan Xcode project files
   for valid Xcode command line configurations.
 website: https://github.com/bitrise-io/steps-cocoapods-and-repository-validator
