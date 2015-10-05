@@ -16,8 +16,15 @@ type_tags:
   - cocoapods
   - pod
 dependencies:
+  - manager: _
+    name: xcode
   - manager: brew
     name: coreutils
+deps:
+  check_only:
+  - name: xcode
+  brew:
+  - name: coreutils
 is_requires_admin_user: false
 is_always_run: false
 is_skippable: false
