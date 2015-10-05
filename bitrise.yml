@@ -1,9 +1,5 @@
-format_version: 1.0.0
+format_version: 1.1.0
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
-
-app:
-  envs:
-  - BITRISE_SOURCE_DIR: ./_tmp
 
 workflows:
   test:
@@ -20,7 +16,17 @@ workflows:
             # git clone https://github.com/bitrise-io/sample-apps-ios-unit-test.git ./_tmp
             # => No Podfile, single branch, Swift project
             # git clone https://github.com/bitrise-io/sample-apps-ios-swift.git _tmp
+    - change-workdir:
+        title: Switch working dir to test/_tmp dir
+        description: |-
+          To prevent step testing issues, like referencing relative
+          files with just './some-file', which would work for local tests
+          but not if the step is included in another bitrise.yml!
+        run_if: true
+        inputs:
+        - path: ./_tmp
+        - is_create_path: false
     - path::./:
         inputs:
-        - is_update_cocoapods: "false"
-        - scan_only_branch: "master"
+        - is_update_cocoapods: false
+        - scan_only_branch: master
