@@ -13,7 +13,7 @@ fi
 print_and_do_command_exit_on_error cd "${source_root_path}"
 
 # Update Cocoapods - if there's at least one Podfile
-podfile_find_out="$(find . -iname 'Podfile')"
+podfile_find_out="$(find . -type f -iname 'Podfile' -not -path "*.git/*")"
 is_podfile_found=0
 if [[ "${podfile_find_out}" != "" ]] ; then
   is_podfile_found=1
