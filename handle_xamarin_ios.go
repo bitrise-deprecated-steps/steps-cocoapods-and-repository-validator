@@ -13,8 +13,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/bitrise-io/go-utils/fileutil"
-	"github.com/bitrise-io/go-utils/pathutil"
+	"./_go-utils/fileutil"
+	"./_go-utils/pathutil"
 )
 
 const (
