@@ -293,7 +293,6 @@ func writeProjectsToFile(branch string, solutions []SolutionModel) error {
 
 func main() {
 	branch := os.Getenv("__BRANCH__")
-	fmt.Printf("\nBranch: %s\n", branch)
 
 	// Collect solution files
 	solutionPths, err := getSolutionFiles()
