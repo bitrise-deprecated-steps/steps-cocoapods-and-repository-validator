@@ -12,9 +12,6 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
-
-	"./_go-utils/fileutil"
-	"./_go-utils/pathutil"
 )
 
 const (
@@ -244,9 +241,9 @@ func writeProjectsToFile(branch string, solutions []SolutionModel) error {
 		content = content + branchBase64Str + "," + solutionPathBase64 + "," + schemesBase64Str + "\n"
 	}
 
-	home := pathutil.UserHomeDir()
+	home := UserHomeDir()
 	schemesPth := path.Join(home, ".schemes")
-	return fileutil.WriteStringToFile(schemesPth, content)
+	return WriteStringToFile(schemesPth, content)
 }
 
 func main() {

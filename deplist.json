@@ -11,10 +11,6 @@
 		{
 			"url": "https://github.com/bitrise-io/steps-utils-bash-toolkit.git",
 			"store_path": "_bash_utils"
-		},
-		{
-			"url": "https://github.com/gkiki90/go-utils.git",
-			"store_path": "_go-utils"
 		}
 	]
 }
