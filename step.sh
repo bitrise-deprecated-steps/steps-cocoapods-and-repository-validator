@@ -12,23 +12,33 @@ if [ -z "${source_root_path}" ]; then
 fi
 print_and_do_command_exit_on_error cd "${source_root_path}"
 
-# Update Cocoapods - if there's at least one Podfile
-podfile_find_out="$(find . -type f -iname 'Podfile' -not -path "*.git/*")"
-is_podfile_found=0
-if [[ "${podfile_find_out}" != "" ]] ; then
-  is_podfile_found=1
-else
-  write_section_to_formatted_output "*No Podfile found*"
+# Handle xamarin project
+go run ${THIS_SCRIPTDIR}/handle_xamarin_ios.go
+handle_xamarin_ios_exit=$?
+is_xamarin_ios_project=0
+if [ ${handle_xamarin_ios_exit} -eq 0 ] ; then
+  is_xamarin_ios_project=1
 fi
 
-if [ ${is_podfile_found} -eq 1 ] ; then
-  if [[ "${is_update_cocoapods}" != "false" ]] ; then
-    print_and_do_command_exit_on_error bash "${THIS_SCRIPTDIR}/_steps-cocoapods-update/step.sh"
+is_podfile_found=0
+if [ ${is_xamarin_ios_project} -eq 0 ] ; then
+  # Update Cocoapods - if there's at least one Podfile
+  podfile_find_out="$(find . -type f -iname 'Podfile' -not -path "*.git/*")"
+  if [[ "${podfile_find_out}" != "" ]] ; then
+    is_podfile_found=1
   else
-    write_section_to_formatted_output "*Skipping Cocoapods version update*"
+    write_section_to_formatted_output "*No Podfile found*"
   fi
-else
-  write_section_to_formatted_output "*Skipping CocoaPods update (No Podfile found)*"
+
+  if [ ${is_podfile_found} -eq 1 ] ; then
+    if [[ "${is_update_cocoapods}" != "false" ]] ; then
+      print_and_do_command_exit_on_error bash "${THIS_SCRIPTDIR}/_steps-cocoapods-update/step.sh"
+    else
+      write_section_to_formatted_output "*Skipping Cocoapods version update*"
+    fi
+  else
+    write_section_to_formatted_output "*Skipping CocoaPods update (No Podfile found)*"
+  fi
 fi
 
 
@@ -63,11 +73,24 @@ for branch in ${branches_to_scan} ; do
 
   write_section_to_formatted_output "### Switching to branch: ${branch_without_remote}"
 
-  if [ ${is_podfile_found} -eq 1 ] ; then
-    export is_update_cocoapods="false" # if required it's already handled
-    print_and_do_command_exit_on_error bash "${THIS_SCRIPTDIR}/_steps-cocoapods-install/run_pod_install.sh"
+  if [ ${is_xamarin_ios_project} -eq 0 ] ; then
+    if [ ${is_podfile_found} -eq 1 ] ; then
+      export is_update_cocoapods="false" # if required it's already handled
+      print_and_do_command_exit_on_error bash "${THIS_SCRIPTDIR}/_steps-cocoapods-install/run_pod_install.sh"
+    fi
+    print_and_do_command_exit_on_error bash "${THIS_SCRIPTDIR}/find_schemes.sh" "${branch_without_remote}"
   fi
-  print_and_do_command_exit_on_error bash "${THIS_SCRIPTDIR}/find_schemes.sh" "${branch_without_remote}"
+
+  if [ ${is_xamarin_ios_project} -eq 1 ] ; then
+    export __BRANCH__=${branch_without_remote}
+    # Handle if xamarin project
+    go run ${THIS_SCRIPTDIR}/handle_xamarin_ios.go
+    handle_xamarin_ios_exit=$?
+    if [ ${handle_xamarin_ios_exit} -ne 0 ] ; then
+      echo "Xamarin failed on branch: ${branch}"
+    fi
+  fi
+
   echo "-> Finished on branch: ${branch}"
 done
 
