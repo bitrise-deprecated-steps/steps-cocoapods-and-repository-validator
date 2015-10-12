@@ -346,16 +346,22 @@ func main() {
 			if err := writeProjectsToFile(branch, solutions); err != nil {
 				log.Fatalf("Faild to write solutions to file, err: %s", err)
 			}
-		}
 
-		for _, solution := range solutions {
-			fmt.Printf("(i) solution found at: %s\n", solution.Path)
-			for _, project := range solution.Projects {
-				fmt.Printf("(i) xamarin iOS project found at: %s\n", project.Path)
-				fmt.Printf("    project ID: %s\n", project.ID)
-				fmt.Printf("    iOS API name: %s\n", project.APIName)
+			for _, solution := range solutions {
+				fmt.Printf("(i) solution found at: %s\n", solution.Path)
+				fmt.Println()
+				for _, project := range solution.Projects {
+					fmt.Printf("(i) xamarin iOS project found at: %s\n", project.Path)
+					fmt.Printf("    project ID: %s\n", project.ID)
+					fmt.Printf("    iOS API name: %s\n", project.APIName)
+				}
+				fmt.Println()
+				fmt.Printf("    schemes: %v\n", solution.Schemes)
+				fmt.Println()
 			}
-			fmt.Printf("    schemes: %v\n", solution.Schemes)
+		} else {
+			fmt.Println()
+			fmt.Printf("(i) Xamarin ios project detected\n")
 			fmt.Println()
 		}
 	}
