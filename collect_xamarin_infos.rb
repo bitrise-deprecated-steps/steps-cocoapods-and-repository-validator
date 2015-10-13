@@ -65,7 +65,7 @@ def write_infos(solutions, branch)
   end
 
   path = File.expand_path('~/.configuration.xamarin')
-  File.open(path, 'w') { |file| file.write(content) }
+  File.open(path, 'a') { |file| file.write(content) }
 end
 
 # -----------------------
