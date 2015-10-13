@@ -49,7 +49,6 @@ def write_infos(solutions, branch)
   branch_base_64 = Base64.strict_encode64(branch)
 
   content = ''
-  apis_str = ''
   schemes_str = ''
 
   (solutions).each do |solution|
