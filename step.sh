@@ -6,7 +6,7 @@ source "${THIS_SCRIPTDIR}/_bash_utils/formatted_output.sh"
 
 
 if [ -z "${source_root_path}" ]; then
-  write_section_to_formatted_output "# Error"
+  echo "# Error"
   write_section_start_to_formatted_output '* source_root_path input is missing'
   exit 1
 fi
@@ -33,30 +33,30 @@ if [ ${is_xamarin_ios_project} -eq 0 ] ; then
   if [[ "${podfile_find_out}" != "" ]] ; then
     is_podfile_found=1
   else
-    write_section_to_formatted_output "*No Podfile found*"
+    echo "*No Podfile found*"
   fi
 
   if [ ${is_podfile_found} -eq 1 ] ; then
     if [[ "${is_update_cocoapods}" != "false" ]] ; then
       print_and_do_command_exit_on_error bash "${THIS_SCRIPTDIR}/_steps-cocoapods-update/step.sh"
     else
-      write_section_to_formatted_output "*Skipping Cocoapods version update*"
+      echo "*Skipping Cocoapods version update*"
     fi
   else
-    write_section_to_formatted_output "*Skipping CocoaPods update (No Podfile found)*"
+    echo "*Skipping CocoaPods update (No Podfile found)*"
   fi
 fi
 
 
-write_section_to_formatted_output "# Gathering project configurations"
+echo "# Gathering project configurations"
 # create/cleanup ~/.schemes file
 echo "" > ~/.schemes
 
 if [ ! -z "${scan_only_branch}" ] ; then
-  write_section_to_formatted_output "*Scanning a single branch: ${scan_only_branch}*"
+  echo "*Scanning a single branch: ${scan_only_branch}*"
   branches_to_scan=("origin/${scan_only_branch}")
 else
-  write_section_to_formatted_output "*Scanning all branches*"
+  echo "*Scanning all branches*"
   branches_to_scan=$(git branch -r | grep -v -- "->")
 fi
 echo " (i) branches_to_scan:"
@@ -77,7 +77,7 @@ for branch in ${branches_to_scan} ; do
   GIT_ASKPASS=echo GIT_SSH="${THIS_SCRIPTDIR}/ssh_no_prompt.sh" git submodule update --init --recursive
   fail_if_cmd_error "Failed to update submodules"
 
-  write_section_to_formatted_output "### Switching to branch: ${branch_without_remote}"
+  echo "### Switching to branch: ${branch_without_remote}"
 
   if [ ${is_xamarin_ios_project} -eq 0 ] ; then
     if [ ${is_podfile_found} -eq 1 ] ; then
