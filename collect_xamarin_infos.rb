@@ -132,4 +132,4 @@ if solutions.count > 0
   write_infos(solutions, branch)
 end
 
-exit(solutions.count > 0 ? 0 : 1)
+exit 0
