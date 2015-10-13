@@ -12,6 +12,12 @@ if [ -z "${source_root_path}" ]; then
 fi
 print_and_do_command_exit_on_error cd "${source_root_path}"
 
+ruby "${THIS_SCRIPTDIR}/detect_xamarin.rb"
+detect_xamarin_exit=$?
+echo "detect_xamarin_exit: ${detect_xamarin_exit}"
+
+
+
 # Handle xamarin project
 go run ${THIS_SCRIPTDIR}/handle_xamarin_ios.go
 handle_xamarin_ios_exit=$?
