@@ -87,3 +87,8 @@ for branch in ${branches_to_scan} ; do
 	export is_update_cocoapods="false" # if it was set to true, than we already updated it
 done
 
+if [ ! -z "${scan_result_submit_url}" ] ; then
+  echo ""
+  echo "Submitting results..."
+  curl --fail -X POST --data-urlencode "api_token=${scan_result_submit_api_token}" --data-urlencode "scan_results=$(cat ~/.schemes)" "${scan_result_submit_url}"
+fi
