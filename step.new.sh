@@ -10,10 +10,14 @@ if [ -z "${source_root_path}" ]; then
 fi
 
 export green='\e[32m'
-export red="\e[01;31m"
+export red="\e[31m"
 export reset="\e[0m"
 
 cd ${source_root_path}
+if [ $? -ne 0 ]; then
+  printf "${error}Failed to cd into ${source_root_path}${reset}"
+  exit 1
+fi
 
 project_types=(
 	"Xamarin",
@@ -42,6 +46,7 @@ for branch in ${branches_to_scan} ; do
   
   # remove the prefix "origin/" from the branch name
   branch_without_remote=$(printf "%s" "${branch}" | cut -c 8-)
+  export BRANCH=${branch_without_remote}
 
   # switch to branch
   GIT_ASKPASS=echo GIT_SSH="${THIS_SCRIPTDIR}/ssh_no_prompt.sh" git checkout -f "${branch_without_remote}"
