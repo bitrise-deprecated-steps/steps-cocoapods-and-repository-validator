@@ -1,6 +1,11 @@
 require 'timeout'
 require 'base64'
 
+branch = ARGV[0]
+unless branch
+  puts "\e[32mBranch not specified\e[0m"
+end
+
 # Check for project files
 ios_projects = Dir.glob("**/*.xcodeproj", File::FNM_CASEFOLD)
 ios_projects.concat(Dir.glob("**/*.xcworkspace", File::FNM_CASEFOLD))
@@ -65,7 +70,7 @@ ios_projects.each do |project|
 	end
 
 	project_info = []
-	project_info << Base64.strict_encode64(ENV['BRANCH'])
+	project_info << Base64.strict_encode64(branch)
 	project_info << Base64.strict_encode64(project)
 	project_info.concat(schemes)
 

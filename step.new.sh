@@ -25,7 +25,7 @@ project_types=(
 	)
 
 project_type_detectors=(
-	"${THIS_SCRIPTDIR}/detect_xamarin.rb"
+	"${THIS_SCRIPTDIR}/xamarin.rb"
 	"${THIS_SCRIPTDIR}/ios.rb"
 	)
 
@@ -39,6 +39,7 @@ fi
 
 for branch in ${branches_to_scan} ; do
 	echo ""
+  echo "=============================="
 	echo "Switching to ${branch}..."
 
 	# remove every file before switch; except the .git folder
@@ -46,7 +47,6 @@ for branch in ${branches_to_scan} ; do
   
   # remove the prefix "origin/" from the branch name
   branch_without_remote=$(printf "%s" "${branch}" | cut -c 8-)
-  export BRANCH=${branch_without_remote}
 
   # switch to branch
   GIT_ASKPASS=echo GIT_SSH="${THIS_SCRIPTDIR}/ssh_no_prompt.sh" git checkout -f "${branch_without_remote}"
@@ -70,13 +70,11 @@ for branch in ${branches_to_scan} ; do
   	exit 1
   fi
 
-  printf "${green}[OK]${reset}\n"
-
   echo ""
   echo "Running detection scripts"
 
   for i in ${!project_type_detectors[@]}; do
-		ruby "${project_type_detectors[$i]}"
+		ruby "${project_type_detectors[$i]}" "${branch_without_remote}"
 
 		if [ $? -ne 0 ]; then
 			exit 1
