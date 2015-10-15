@@ -19,7 +19,7 @@ end
 def get_configuration(solution_file_path)
   configuration_start = 'GlobalSection(SolutionConfigurationPlatforms) = preSolution'
   configuration_end = 'EndGlobalSection'
-  
+
   is_next_line_scheme = false
   configurations = []
   File.open(solution_file_path).each do |line|
@@ -32,7 +32,7 @@ def get_configuration(solution_file_path)
         puts "\e[31mFailed to parse configuration: #{line}\e[0m"
       end
     end
-    
+
     is_next_line_scheme = true if line.include? configuration_start
   end
 
@@ -50,21 +50,26 @@ end
 
 xamarin_solutions = []
 Dir.glob("**/*.sln", File::FNM_CASEFOLD).each do |solution|
-  configuration = get_configuration(solution)
-  next if configuration.empty?
+  solution_file = Pathname.new(solution).realpath.to_s
+  puts "(i) solution_file: #{solution_file}"
 
-  pn = Pathname.new(solution)
-  base_directory, solution_file_name = pn.split
+  base_directory = File.dirname(solution_file)
+  puts "(i) base_directory: #{base_directory}"
+
+  configuration = get_configuration(solution_file)
+  next if configuration.empty?
 
   build_tool = nil
   File.readlines(solution).join("\n").scan(/Project\(\"[^\"]*\"\)\s*=\s*\"[^\"]*\",\s*\"([^\"]*.csproj)\"/).each do |match|
     project = match[0].strip.gsub(/\\/,'/')
     project_path = File.join(base_directory, project)
 
-    received_build_tool = get_xamarin_ios_api(project)
-    build_tool = received_build_tool if (received_build_tool != nil && build_tool != "monotouch")
+    received_build_tool = get_xamarin_ios_api(project_path)
+    build_tool = received_build_tool if !received_build_tool.nil? && build_tool != "monotouch"
     next unless received_build_tool
   end
+
+  next unless build_tool
 
   xamarin_solutions << {
     file: solution,
@@ -97,6 +102,6 @@ xamarin_solutions.each do |solution|
   project_info << Base64.strict_encode64(solution[:file])
   project_info << Base64.strict_encode64(solution[:build_tool])
   project_info << base64_configuration.join(",")
-  
+
   File.open("#{ENV['HOME']}/.configuration.xamarin", 'a') { |f| f.puts project_info.join(',') }
 end
