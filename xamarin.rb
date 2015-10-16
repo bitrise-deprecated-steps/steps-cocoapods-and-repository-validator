@@ -7,16 +7,7 @@ require 'base64'
 # --- functions
 # -----------------------
 
-def get_xamarin_ios_api(project_file_path)
-  lines = File.readlines(project_file_path)
-
-  return 'mdtool' if lines.grep(/Include="monotouch"/).size > 0
-  return 'xbuild' if lines.grep(/Include="Xamarin.iOS"/).size > 0
-
-  nil
-end
-
-def get_configuration(solution_file_path)
+def get_solution_configs(solution_file_path)
   configuration_start = 'GlobalSection(SolutionConfigurationPlatforms) = preSolution'
   configuration_end = 'EndGlobalSection'
 
@@ -39,6 +30,35 @@ def get_configuration(solution_file_path)
   configurations
 end
 
+def get_xamarin_ios_api_and_configs(project_file_path)
+  regex = '<PropertyGroup Condition=" \'\$\(Configuration\)\|\$\(Platform\)\' == \'(.*)\' ">'
+  configs = []
+
+  lines = File.readlines(project_file_path)
+  (lines).each do |line|
+    match = line.match(regex)
+    next unless match
+
+    config = match.captures[0]
+    next unless config
+
+    configs << config
+  end
+
+  return 'mdtool', configs if lines.grep(/Include="monotouch"/).size > 0
+  return 'xbuild', configs if lines.grep(/Include="Xamarin.iOS"/).size > 0
+
+  nil
+end
+
+def filter_solution_configs(solution_configs, project_configs)
+  configs = []
+  (solution_configs).each do |config|
+    configs << config if project_configs.include? config
+  end
+  configs
+end
+
 # -----------------------
 # --- main
 # -----------------------
@@ -51,32 +71,39 @@ Dir.glob('**/*.sln', File::FNM_CASEFOLD).each do |solution|
   solution_file = Pathname.new(solution).realpath.to_s
   puts "(i) solution_file: #{solution_file}"
 
-  configuration = get_configuration(solution_file)
-  next if configuration.empty?
+  solution_configs = get_solution_configs(solution_file)
+  next if solution_configs.empty?
 
   base_directory = File.dirname(solution_file)
 
   build_tool = nil
+  project_configs = []
   File.readlines(solution).join("\n").scan(/Project\(\"[^\"]*\"\)\s*=\s*\"[^\"]*\",\s*\"([^\"]*.csproj)\"/).each do |match|
     project = match[0].strip.gsub(/\\/, '/')
     project_path = File.join(base_directory, project)
 
-    received_build_tool = get_xamarin_ios_api(project_path)
-    build_tool = received_build_tool if !received_build_tool.nil? && build_tool != 'monotouch'
+    received_build_tool, configs = get_xamarin_ios_api_and_configs(project_path)
     next unless received_build_tool
+
+    build_tool = received_build_tool if build_tool != 'monotouch'
+    project_configs += configs unless configs.nil?
   end
 
   next unless build_tool
 
+  filtered_configs = filter_solution_configs(solution_configs, project_configs)
+  next unless filtered_configs
+
   xamarin_solutions << {
     file: solution,
-    configurations: configuration,
+    configurations: filtered_configs,
     build_tool: build_tool
   }
 end
 
 exit 0 if (xamarin_solutions.count) == 0
 
+puts
 puts "\e[32mXamarin project detected\e[0m"
 
 xamarin_solutions.each do |solution|
