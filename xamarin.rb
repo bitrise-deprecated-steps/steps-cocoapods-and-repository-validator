@@ -44,28 +44,25 @@ end
 # -----------------------
 
 branch = ARGV[0]
-unless branch
-  puts "\e[32mBranch not specified\e[0m"
-end
+puts "\e[32mBranch not specified\e[0m" unless branch
 
 xamarin_solutions = []
-Dir.glob("**/*.sln", File::FNM_CASEFOLD).each do |solution|
+Dir.glob('**/*.sln', File::FNM_CASEFOLD).each do |solution|
   solution_file = Pathname.new(solution).realpath.to_s
   puts "(i) solution_file: #{solution_file}"
-
-  base_directory = File.dirname(solution_file)
-  puts "(i) base_directory: #{base_directory}"
 
   configuration = get_configuration(solution_file)
   next if configuration.empty?
 
+  base_directory = File.dirname(solution_file)
+
   build_tool = nil
   File.readlines(solution).join("\n").scan(/Project\(\"[^\"]*\"\)\s*=\s*\"[^\"]*\",\s*\"([^\"]*.csproj)\"/).each do |match|
-    project = match[0].strip.gsub(/\\/,'/')
+    project = match[0].strip.gsub(/\\/, '/')
     project_path = File.join(base_directory, project)
 
     received_build_tool = get_xamarin_ios_api(project_path)
-    build_tool = received_build_tool if !received_build_tool.nil? && build_tool != "monotouch"
+    build_tool = received_build_tool if !received_build_tool.nil? && build_tool != 'monotouch'
     next unless received_build_tool
   end
 
@@ -83,15 +80,15 @@ exit 0 if (xamarin_solutions.count) == 0
 puts "\e[32mXamarin project detected\e[0m"
 
 xamarin_solutions.each do |solution|
-  puts ""
+  puts
   puts "Inspecting solution: #{solution[:file]}"
 
-  puts ""
-  puts "Build tool:"
+  puts
+  puts 'Build tool:'
   puts solution[:build_tool]
 
-  puts ""
-  puts "Configurations:"
+  puts
+  puts 'Configurations:'
   solution[:configurations].each { |configuration| puts configuration }
 
   base64_configuration = []
@@ -101,7 +98,7 @@ xamarin_solutions.each do |solution|
   project_info << Base64.strict_encode64(branch)
   project_info << Base64.strict_encode64(solution[:file])
   project_info << Base64.strict_encode64(solution[:build_tool])
-  project_info << base64_configuration.join(",")
+  project_info << base64_configuration.join(',')
 
   File.open("#{ENV['HOME']}/.configuration.xamarin", 'a') { |f| f.puts project_info.join(',') }
 end
