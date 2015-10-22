@@ -64,7 +64,10 @@ end
 # -----------------------
 
 branch = ARGV[0]
-puts "\e[32mBranch not specified\e[0m" unless branch
+unless branch
+  puts "\e[32mBranch not specified\e[0m"
+  exit 0
+end
 
 xamarin_solutions = []
 Dir.glob('**/*.sln', File::FNM_CASEFOLD).each do |solution|

@@ -4,6 +4,7 @@ require 'base64'
 branch = ARGV[0]
 unless branch
   puts "\e[32mBranch not specified\e[0m"
+  exit 0
 end
 
 # Check for project files
