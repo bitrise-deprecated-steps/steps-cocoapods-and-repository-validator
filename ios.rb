@@ -50,7 +50,7 @@ ios_projects.each do |project|
 		end
 	rescue Timeout::Error
 		puts "\e[31mTimeout: Failed to get schemes from #{project}\e[0m"
-		exit 1
+		next
 	end
 
 	if xcodebuild_output.empty?
