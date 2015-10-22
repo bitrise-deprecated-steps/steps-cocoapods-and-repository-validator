@@ -1,8 +1,6 @@
 #!/bin/bash
 
 export THIS_SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-source "${THIS_SCRIPTDIR}/_bash_utils/utils.sh"
-source "${THIS_SCRIPTDIR}/_bash_utils/formatted_output.sh"
 
 if [ -z "${source_root_path}" ]; then
 	echo "source_root_path input is missing"
@@ -18,6 +16,13 @@ if [ $? -ne 0 ]; then
   printf "${error}Failed to cd into ${source_root_path}${reset}"
   exit 1
 fi
+
+# Cleanup
+rm "$HOME/.configuration.ios"
+rm "$HOME/.configuration.xamarin"
+
+touch "$HOME/.configuration.ios"
+touch "$HOME/.configuration.xamarin"
 
 project_types=(
 	"Xamarin",
@@ -88,5 +93,5 @@ done
 if [ ! -z "${scan_result_submit_url}" ] ; then
   echo ""
   echo "Submitting results..."
-  curl --fail -X POST --data-urlencode "api_token=${scan_result_submit_api_token}" --data-urlencode "scan_results=$(cat ~/.schemes)" "${scan_result_submit_url}"
+  curl --fail -X POST --data-urlencode "api_token=${scan_result_submit_api_token}" --data-urlencode "scan_results_ios=$(cat ~/.configuration.ios)" --data-urlencode "scan_results_xamarin=$(cat ~/.configuration.xamarin)" "${scan_result_submit_url}"
 fi

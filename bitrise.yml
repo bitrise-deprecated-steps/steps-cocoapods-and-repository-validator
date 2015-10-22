@@ -4,13 +4,15 @@ default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 workflows:
   new:
     envs:
-    - source_root_path: ~/develop/Bitrise/Test/BitriseBranchTest
+    - source_root_path: "${BITRISE_SOURCE_PATH}"
+    - scan_result_submit_api_token: "${BITRISE_SUBMIT_API_TOKEN}"
+    - scan_result_submit_url: "${BITRISE_SUBMIT_URL}"
     steps:
     - script:
         inputs:
         - content: |-
             #!/bin/bash
-            bash step.new.sh
+            bash step.sh
   test:
     steps:
     - change-workdir@1.0.0:
