@@ -48,7 +48,7 @@ inputs:
       description: |
          If this parameter is provided then only the specified branch
          will be scanned, all other branches will be ignored.
-      is_expand: false
+      is_expand: true
   - scan_result_submit_url: "$BITRISE_SCAN_RESULT_POST_URL"
     opts:
       title: "POST url to send the scan results to"
