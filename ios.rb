@@ -23,7 +23,7 @@ puts "Checking for Podfile"
 podfile_pathes = Dir.glob("**/Podfile", File::FNM_CASEFOLD)
 podfile_pathes.delete_if { |podfile| podfile.include? ".git/" }
 
-workspaces = []
+workspaces = {}
 podfile_pathes.each do |path|
 	puts "\e[32mPodfile detected at path: #{path}\e[0m"
 
