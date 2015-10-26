@@ -43,31 +43,18 @@ ios_projects.each do |project|
 	puts ""
 	puts "Schemes:"
 
-	xcodebuild_output = nil
-	begin
-		Timeout.timeout(20) do
-			xcodebuild_output = `xcodebuild -list -project #{project}`.split("\n") if project.include? ".xcodeproj"
-			xcodebuild_output = `xcodebuild -list -workspace #{project}`.split("\n") if project.include? ".xcworkspace"
-		end
-	rescue Timeout::Error
-		puts "\e[31mTimeout: Failed to get schemes from #{project}\e[0m"
-		next
+	scheme_pathes = Dir[File.join(project, "xcshareddata/xcschemes/*.xcscheme")]
+	schemes = []
+	scheme_pathes.each do |scheme_path|
+		scheme_name = File.basename(scheme_path, ".*")
+
+		puts scheme_name
+		schemes << Base64.strict_encode64(scheme_name)
 	end
 
-	if xcodebuild_output.empty?
-		puts "No shared scheme found"
+	if schemes.empty?
+		puts "\e[33mNo shared scheme found\e[0m"
 		next
-	end
-
-	schemes = nil
-	xcodebuild_output.each do |line|
-		stripped_line = line.strip
-
-		if schemes
-			puts stripped_line
-			schemes << Base64.strict_encode64(stripped_line)
-		end
-		schemes = [] if stripped_line.eql? "Schemes:"
 	end
 
 	project_info = []
