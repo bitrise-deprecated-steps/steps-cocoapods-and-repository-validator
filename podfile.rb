@@ -66,11 +66,11 @@ class Podfile
 			projects = Dir[File.join(@base_dir, "*.xcodeproj")]
 
 			if projects.count == 0
-				raise "No project found for Podfile at path: #{@base_dir}"
+				dict[:error] = "No project found for Podfile at path: #{@base_dir}"
 			end
 
 			if projects.count > 1
-				raise "Multiple projects found for Podfile at path: #{@base_dir}. Check this reference for help: https://guides.cocoapods.org/syntax/podfile.html#xcodeproj"
+				dict[:error] = "Multiple projects found for Podfile at path: #{@base_dir}. Check this reference for help: https://guides.cocoapods.org/syntax/podfile.html#xcodeproj"
 			end
 
 			dict[:project] = File.basename(projects.first, ".*")
@@ -78,9 +78,9 @@ class Podfile
 
 		# Check if the file exists
 		project_path = File.join(@base_dir, "#{dict[:project]}.xcodeproj")
-		# unless File.exists?(project_path)
-		# 	raise "No project found at path: #{project_path}"
-		# end
+		unless File.exists?(project_path)
+			dict[:error] = "No project found at path: #{project_path}"
+		end
 
 		# If no explicit Xcode workspace is specified and only one project exists in the same directory as the Podfile,
 		# then the name of that project is used as the workspace’s name.
@@ -111,11 +111,15 @@ class Podfile
 	def get_workspaces(dict)
 		@workspaces ||= {}
 
-		project_path = File.expand_path(File.join(@base_dir, "#{dict[:project]}.xcodeproj"))
-		dir = File.dirname(project_path)
-		workspace_path = File.join(dir, "#{dict[:workspace]}.xcworkspace")
+		if dict[:error] == nil
+			project_path = File.expand_path(File.join(@base_dir, "#{dict[:project]}.xcodeproj"))
+			dir = File.dirname(project_path)
+			workspace_path = File.join(dir, "#{dict[:workspace]}.xcworkspace")
 
-		@workspaces[workspace_path] = project_path
+			@workspaces[workspace_path] = project_path
+		else
+			puts "\e[31m#{dict[:error]}\e[0m"
+		end
 
 		dict[:targets].each do |target|
 			get_workspaces(target)

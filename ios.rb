@@ -4,7 +4,7 @@ require_relative 'podfile.rb'
 
 branch = ARGV[0]
 unless branch
-  puts "\e[32mBranch not specified\e[0m"
+  puts "\e[31mBranch not specified\e[0m"
   exit 0
 end
 
