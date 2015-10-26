@@ -1,12 +1,15 @@
 require 'base64'
 require 'pathname'
-require_relative 'podfile.rb'
+require_relative 'podfile'
+require_relative 'config_helper'
 
 branch = ARGV[0]
 unless branch
   puts "\e[31mBranch not specified\e[0m"
   exit 0
 end
+
+config_helper = ConfigHelper.new
 
 # Check for project files
 ios_projects = Dir.glob(File.join("**/*.xcodeproj"), File::FNM_CASEFOLD)
@@ -58,7 +61,7 @@ ios_projects.each do |project|
 		scheme_name = File.basename(scheme_path, ".*")
 
 		puts scheme_name
-		schemes << Base64.strict_encode64(scheme_name)
+		schemes << scheme_name
 	end
 
 	if schemes.empty?
@@ -67,11 +70,10 @@ ios_projects.each do |project|
 	end
 
 	valid_projects.each do |valid_project|
-		project_info = []
-		project_info << Base64.strict_encode64(branch)
-		project_info << Base64.strict_encode64(valid_project)
-		project_info.concat(schemes)
-
-		File.open("#{ENV['HOME']}/.configuration.ios", 'a') { |f| f.puts project_info.join(',') }
+		config_helper.save("ios", branch, {
+			name: valid_project,
+			path: valid_project,
+			schemes: schemes
+		})
 	end
 end
