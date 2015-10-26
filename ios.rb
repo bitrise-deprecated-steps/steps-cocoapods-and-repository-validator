@@ -1,4 +1,3 @@
-require 'base64'
 require 'pathname'
 require_relative 'podfile'
 require_relative 'config_helper'

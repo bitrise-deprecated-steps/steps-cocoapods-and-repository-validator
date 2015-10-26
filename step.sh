@@ -83,5 +83,5 @@ done
 if [ ! -z "${scan_result_submit_url}" ] ; then
   echo ""
   echo "Submitting results..."
-  curl --fail -H "Content-Type: application/json" --data-binary @~/.bitrise_config "${scan_result_submit_url}?api_token=${scan_result_submit_api_token}"
+  curl --fail -H "Content-Type: application/json" --data-binary @$HOME/.bitrise_config "${scan_result_submit_url}?api_token=${scan_result_submit_api_token}"
 fi
