@@ -15,7 +15,7 @@ class Podfile
 	  instance_eval(&block)
 	end
 
-	def target(target_name, &block)
+	def target(target_name, *args, &block)
 		target_dict = {
 			target: target_name,
 			project: nil,
