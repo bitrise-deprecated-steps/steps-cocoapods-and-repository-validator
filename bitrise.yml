@@ -23,5 +23,4 @@ workflows:
         - is_create_path: false
     - path::./:
         inputs:
-        - is_update_cocoapods: false
         - scan_only_branch: master

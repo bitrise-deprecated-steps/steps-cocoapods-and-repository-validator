@@ -17,15 +17,8 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# Cleanup
-rm "$HOME/.configuration.ios"
-rm "$HOME/.configuration.xamarin"
-
-touch "$HOME/.configuration.ios"
-touch "$HOME/.configuration.xamarin"
-
 project_types=(
-	"Xamarin",
+	"Xamarin.iOS",
 	"iOS"
 	)
 
@@ -85,13 +78,10 @@ for branch in ${branches_to_scan} ; do
 			exit 1
 		fi
 	done
-
-	# Cleanup vars
-	export is_update_cocoapods="false" # if it was set to true, than we already updated it
 done
 
 if [ ! -z "${scan_result_submit_url}" ] ; then
   echo ""
   echo "Submitting results..."
-  curl --fail -X POST --data-urlencode "api_token=${scan_result_submit_api_token}" --data-urlencode "scan_results_ios=$(cat ~/.configuration.ios)" --data-urlencode "scan_results_xamarin=$(cat ~/.configuration.xamarin)" "${scan_result_submit_url}"
+  curl --fail -H "Content-Type: application/json" --data-binary @$HOME/.bitrise_config "${scan_result_submit_url}?api_token=${scan_result_submit_api_token}"
 fi

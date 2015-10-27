@@ -1,7 +1,7 @@
 require 'find'
 require 'pathname'
 require 'set'
-require 'base64'
+require_relative 'config_helper'
 
 # -----------------------
 # --- functions
@@ -121,14 +121,12 @@ xamarin_solutions.each do |solution|
   puts 'Configurations:'
   solution[:configurations].each { |configuration| puts configuration }
 
-  base64_configuration = []
-  solution[:configurations].each { |configuration| base64_configuration << Base64.strict_encode64(configuration) }
-
-  project_info = []
-  project_info << Base64.strict_encode64(branch)
-  project_info << Base64.strict_encode64(solution[:file])
-  project_info << Base64.strict_encode64(solution[:build_tool])
-  project_info << base64_configuration.join(',')
-
-  File.open("#{ENV['HOME']}/.configuration.xamarin", 'a') { |f| f.puts project_info.join(',') }
+  valid_projects.each do |valid_project|
+    config_helper.save("xamarin", branch, {
+      name: solution[:file],
+      path: solution[:file],
+      schemes: solution[:configurations]
+      build_tool: solution[:build_tool]
+    })
+  end
 end
