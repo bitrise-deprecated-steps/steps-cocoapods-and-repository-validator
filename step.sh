@@ -18,12 +18,12 @@ if [ $? -ne 0 ]; then
 fi
 
 project_types=(
-	# "Xamarin.iOS",
+	"Xamarin.iOS",
 	"iOS"
 	)
 
 project_type_detectors=(
-	# "${THIS_SCRIPTDIR}/xamarin.rb"
+	"${THIS_SCRIPTDIR}/xamarin.rb"
 	"${THIS_SCRIPTDIR}/ios.rb"
 	)
 
