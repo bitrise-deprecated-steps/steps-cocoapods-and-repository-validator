@@ -125,7 +125,7 @@ xamarin_solutions.each do |solution|
     config_helper.save("xamarin", branch, {
       name: solution[:file],
       path: solution[:file],
-      schemes: solution[:configurations]
+      schemes: solution[:configurations],
       build_tool: solution[:build_tool]
     })
   end
