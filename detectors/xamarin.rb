@@ -1,7 +1,7 @@
 require 'find'
 require 'pathname'
 require 'set'
-require_relative 'config_helper'
+require_relative '../config_helper'
 
 # -----------------------
 # --- functions
@@ -86,11 +86,10 @@ def save_solutions(branch, solutions)
     next if solution[:project_build_configs].nil? || solution[:project_build_configs].count == 0
 
     solution[:project_build_configs].each do |project|
-      file_name = "xamarin.#{project[:project_type]}"
-      config_helper.save(file_name, branch, {
+      config_helper.save("xamarin.#{project[:project_type]}", branch, {
         name: project[:project_path],
         path: project[:project_path],
-        schemes:   project[:configurations],
+        schemes: project[:configurations],
         build_tool: project[:build_tool]
       })
     end
@@ -103,7 +102,7 @@ end
 
 branch = ARGV[0]
 unless branch
-  puts "\e[32mBranch not specified\e[0m"
+  puts "\e[31mBranch not specified\e[0m"
   exit 0
 end
 
@@ -123,7 +122,7 @@ Dir.glob('**/*.sln', File::FNM_CASEFOLD).each do |solution|
     project_path = File.join(base_directory, project)
 
     received_ios_api, configs = get_xamarin_ios_api_and_configs(project_path)
-    if !received_ios_api.nil?
+    unless received_ios_api.nil?
       # monotouch -> mdtool
       # Xamarin.iOS -> xbuild
       build_tool = 'mdtool'
@@ -135,22 +134,19 @@ Dir.glob('**/*.sln', File::FNM_CASEFOLD).each do |solution|
         build_tool: build_tool,
         configurations: configs
       }
-    else
-      received_android_api, configs = get_xamarin_android_api_and_configs(project_path)
-      if !received_android_api.nil?
-        # Mono.Android -> xbuild
-        build_tool = 'xbuild'
+    end
 
-        project_build_configurations << {
-          project_path: project_path,
-          project_type: 'android',
-          build_tool: build_tool,
-          configurations: configs
-        }
-      else
-        puts
-        puts "(!) Not ios or android project at: #{project_path}"
-      end
+    received_android_api, configs = get_xamarin_android_api_and_configs(project_path)
+    unless received_android_api.nil?
+      # Mono.Android -> xbuild
+      build_tool = 'xbuild'
+
+      project_build_configurations << {
+        project_path: project_path,
+        project_type: 'android',
+        build_tool: build_tool,
+        configurations: configs
+      }
     end
   end
 
@@ -181,11 +177,12 @@ xamarin_solutions.each do |solution|
 
         project[:configurations].each { |configuration| puts "  - #{configuration}" }
       else
-        puts '(!) No configurations in project'
+        puts "\e[31mNo configuration detected\e[0m"
       end
     end
   else
-    puts '(!) No ios or android project in solution'
+    puts
+    puts "\e[31mDidn't find any iOS or Android projects at path: #{project_path}\e[0m"
   end
 end
 

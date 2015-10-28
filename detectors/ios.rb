@@ -1,6 +1,6 @@
 require 'pathname'
 require_relative 'podfile'
-require_relative 'config_helper'
+require_relative '../config_helper'
 
 branch = ARGV[0]
 unless branch
@@ -64,7 +64,7 @@ ios_projects.each do |project|
 	end
 
 	if schemes.empty?
-		puts "\e[33mNo shared scheme found\e[0m"
+		puts "\e[31mNo shared scheme found\e[0m"
 		next
 	end
 
