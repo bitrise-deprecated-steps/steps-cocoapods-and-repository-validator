@@ -30,6 +30,26 @@ def get_solution_configs(solution_file_path)
   configurations
 end
 
+def get_xamarin_android_api_and_configs(project_file_path)
+  regex = '<PropertyGroup Condition=" \'\$\(Configuration\)\|\$\(Platform\)\' == \'(.*)\' ">'
+  configs = []
+
+  lines = File.readlines(project_file_path)
+  (lines).each do |line|
+    match = line.match(regex)
+    next unless match
+
+    config = match.captures[0]
+    next unless config
+
+    configs << config
+  end
+
+  return 'Mono.Android', configs if lines.grep(/Include="Mono.Android"/).size > 0
+
+  nil
+end
+
 def get_xamarin_ios_api_and_configs(project_file_path)
   regex = '<PropertyGroup Condition=" \'\$\(Configuration\)\|\$\(Platform\)\' == \'(.*)\' ">'
   configs = []
@@ -45,8 +65,8 @@ def get_xamarin_ios_api_and_configs(project_file_path)
     configs << config
   end
 
-  return 'mdtool', configs if lines.grep(/Include="monotouch"/).size > 0
-  return 'xbuild', configs if lines.grep(/Include="Xamarin.iOS"/).size > 0
+  return 'monotouch', configs if lines.grep(/Include="monotouch"/).size > 0
+  return 'Xamarin.iOS', configs if lines.grep(/Include="Xamarin.iOS"/).size > 0
 
   nil
 end
@@ -57,6 +77,24 @@ def filter_solution_configs(solution_configs, project_configs)
     configs << config if project_configs.include? config
   end
   configs
+end
+
+def save_solutions(branch, solutions)
+  config_helper = ConfigHelper.new
+
+  (solutions).each do |solution|
+    next if solution[:project_build_configs].nil? || solution[:project_build_configs].count == 0
+
+    solution[:project_build_configs].each do |project|
+      file_name = "xamarin.#{project[:project_type]}"
+      config_helper.save(file_name, branch, {
+        name: project[:project_path],
+        path: project[:project_path],
+        schemes:   project[:configurations],
+        build_tool: project[:build_tool]
+      })
+    end
+  end
 end
 
 # -----------------------
@@ -79,28 +117,46 @@ Dir.glob('**/*.sln', File::FNM_CASEFOLD).each do |solution|
 
   base_directory = File.dirname(solution_file)
 
-  build_tool = nil
-  project_configs = []
+  project_build_configurations = []
   File.readlines(solution).join("\n").scan(/Project\(\"[^\"]*\"\)\s*=\s*\"[^\"]*\",\s*\"([^\"]*.csproj)\"/).each do |match|
     project = match[0].strip.gsub(/\\/, '/')
     project_path = File.join(base_directory, project)
 
-    received_build_tool, configs = get_xamarin_ios_api_and_configs(project_path)
-    next unless received_build_tool
+    received_ios_api, configs = get_xamarin_ios_api_and_configs(project_path)
+    if !received_ios_api.nil?
+      # monotouch -> mdtool
+      # Xamarin.iOS -> xbuild
+      build_tool = 'mdtool'
+      build_tool = 'xbuild' if received_ios_api == 'Xamarin.iOS'
 
-    build_tool = received_build_tool if build_tool != 'monotouch'
-    project_configs += configs unless configs.nil?
+      project_build_configurations << {
+        project_path: project_path,
+        project_type: 'ios',
+        build_tool: build_tool,
+        configurations: configs
+      }
+    else
+      received_android_api, configs = get_xamarin_android_api_and_configs(project_path)
+      if !received_android_api.nil?
+        # Mono.Android -> xbuild
+        build_tool = 'xbuild'
+
+        project_build_configurations << {
+          project_path: project_path,
+          project_type: 'android',
+          build_tool: build_tool,
+          configurations: configs
+        }
+      else
+        puts
+        puts "(!) Not ios or android project at: #{project_path}"
+      end
+    end
   end
 
-  next unless build_tool
-
-  filtered_configs = filter_solution_configs(solution_configs, project_configs)
-  next unless filtered_configs
-
   xamarin_solutions << {
-    file: solution,
-    configurations: filtered_configs,
-    build_tool: build_tool
+    solution_path: solution,
+    project_build_configs: project_build_configurations
   }
 end
 
@@ -111,22 +167,26 @@ puts "\e[32mXamarin project detected\e[0m"
 
 xamarin_solutions.each do |solution|
   puts
-  puts "Inspecting solution: #{solution[:file]}"
+  puts "Inspecting solution: #{solution[:solution_path]}"
 
-  puts
-  puts 'Build tool:'
-  puts solution[:build_tool]
+  if !solution[:project_build_configs].nil? && solution[:project_build_configs].count > 0
+    solution[:project_build_configs].each do |project|
+      puts
+      puts "Inspecting project: #{project[:project_path]}"
+      puts " * project_type: #{project[:project_type]}"
+      puts " * build_tool: #{project[:build_tool]}"
 
-  puts
-  puts 'Configurations:'
-  solution[:configurations].each { |configuration| puts configuration }
+      if !project[:configurations].nil? && project[:configurations].count > 0
+        puts ' * configurations:'
 
-  valid_projects.each do |valid_project|
-    config_helper.save("xamarin", branch, {
-      name: solution[:file],
-      path: solution[:file],
-      schemes: solution[:configurations],
-      build_tool: solution[:build_tool]
-    })
+        project[:configurations].each { |configuration| puts "  - #{configuration}" }
+      else
+        puts '(!) No configurations in project'
+      end
+    end
+  else
+    puts '(!) No ios or android project in solution'
   end
 end
+
+save_solutions(branch, xamarin_solutions)
