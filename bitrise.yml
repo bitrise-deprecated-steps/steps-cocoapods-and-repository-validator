@@ -19,7 +19,7 @@ workflows:
         title: Switch working dir
         run_if: true
         inputs:
-        - path: ${HOME}/Develop/xamarin/CreditCardValidator.iOS
+        - path: "${BITRISE_SOURCE_PATH}"
         - is_create_path: false
     - path::./:
         inputs:

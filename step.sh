@@ -17,14 +17,10 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-project_types=(
-	"Xamarin.iOS",
-	"iOS"
-	)
-
 project_type_detectors=(
-	"${THIS_SCRIPTDIR}/xamarin.rb"
-	"${THIS_SCRIPTDIR}/ios.rb"
+  "${THIS_SCRIPTDIR}/detectors/ios.rb"
+  "${THIS_SCRIPTDIR}/detectors/android.rb"
+	"${THIS_SCRIPTDIR}/detectors/xamarin.rb"
 	)
 
 if [ ! -z "${scan_only_branch}" ] ; then
