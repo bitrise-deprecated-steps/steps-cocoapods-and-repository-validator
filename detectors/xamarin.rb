@@ -150,6 +150,8 @@ Dir.glob('**/*.sln', File::FNM_CASEFOLD).each do |solution|
     end
   end
 
+  next if project_build_configurations.nil? || project_build_configurations.count() == 0
+
   xamarin_solutions << {
     solution_path: solution,
     project_build_configs: project_build_configurations
