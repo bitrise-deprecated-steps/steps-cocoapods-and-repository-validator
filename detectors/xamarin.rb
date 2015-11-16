@@ -129,7 +129,7 @@ Dir.glob('**/*.sln', File::FNM_CASEFOLD).each do |solution|
       build_tool = 'xbuild' if received_ios_api == 'Xamarin.iOS'
 
       project_build_configurations << {
-        project_path: project_path,
+        project_path: Pathname.new(project_path).relative_path_from(Pathname.new(Dir.pwd)),
         project_type: 'ios',
         build_tool: build_tool,
         configurations: configs
@@ -142,7 +142,7 @@ Dir.glob('**/*.sln', File::FNM_CASEFOLD).each do |solution|
       build_tool = 'xbuild'
 
       project_build_configurations << {
-        project_path: project_path,
+        project_path: Pathname.new(project_path).relative_path_from(Pathname.new(Dir.pwd)),
         project_type: 'android',
         build_tool: build_tool,
         configurations: configs
