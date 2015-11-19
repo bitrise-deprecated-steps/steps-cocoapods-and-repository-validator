@@ -87,10 +87,10 @@ def save_solutions(branch, solutions)
 
     solution[:project_build_configs].each do |project|
       config_helper.save("xamarin.#{project[:project_type]}", branch, {
-        name: project[:project_path],
-        path: project[:project_path],
-        schemes: project[:configurations],
-        build_tool: project[:build_tool]
+        "name" => project[:project_path].to_s,
+        "path" => project[:project_path].to_s,
+        "schemes" => project[:configurations],
+        "build_tool" => project[:build_tool]
       })
     end
   end
