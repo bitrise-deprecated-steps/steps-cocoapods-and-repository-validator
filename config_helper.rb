@@ -16,7 +16,6 @@ class ConfigHelper
 		data[project_type][branch] ||= { "projects" => [] }
 
 		data[project_type][branch]["projects"] << project_info unless data[project_type][branch]["projects"].include?(project_info)
-		
 		File.open(@file_path, "w") { |f| f.write(data.to_json) }
 	end
 end

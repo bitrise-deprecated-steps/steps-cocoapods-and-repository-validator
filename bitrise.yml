@@ -8,11 +8,9 @@ workflows:
     - scan_result_submit_api_token: "${BITRISE_SUBMIT_API_TOKEN}"
     - scan_result_submit_url: "${BITRISE_SUBMIT_URL}"
     steps:
-    - script:
+    - path::./:
         inputs:
-        - content: |-
-            #!/bin/bash
-            bash step.sh
+        - source_root_path: "${BITRISE_SOURCE_PATH}"
   test:
     steps:
     - change-workdir@1.0.0:

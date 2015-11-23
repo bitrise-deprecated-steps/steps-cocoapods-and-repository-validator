@@ -83,16 +83,13 @@ def save_solutions(branch, solutions)
   config_helper = ConfigHelper.new
 
   (solutions).each do |solution|
-    next if solution[:project_build_configs].nil? || solution[:project_build_configs].count == 0
-
-    solution[:project_build_configs].each do |project|
-      config_helper.save("xamarin.#{project[:project_type]}", branch, {
-        "name" => project[:project_path].to_s,
-        "path" => project[:project_path].to_s,
-        "schemes" => project[:configurations],
-        "build_tool" => project[:build_tool]
-      })
-    end
+    config_helper.save("xamarin", branch, {
+      "name" => solution[:path].to_s,
+      "path" => solution[:path].to_s,
+      "schemes" => solution[:configs],
+      "ios" => solution[:ios],
+      "android" => solution[:android]
+    })
   end
 end
 
@@ -109,53 +106,31 @@ end
 xamarin_solutions = []
 Dir.glob('**/*.sln', File::FNM_CASEFOLD).each do |solution|
   solution_file = Pathname.new(solution).realpath.to_s
-  puts "(i) solution_file: #{solution_file}"
 
   solution_configs = get_solution_configs(solution_file)
   next if solution_configs.empty?
 
   base_directory = File.dirname(solution_file)
 
-  project_build_configurations = []
+  solution_config = {
+    path: solution,
+    configs: solution_configs,
+    ios: false,
+    android: false
+  }
+
   File.readlines(solution).join("\n").scan(/Project\(\"[^\"]*\"\)\s*=\s*\"[^\"]*\",\s*\"([^\"]*.csproj)\"/).each do |match|
     project = match[0].strip.gsub(/\\/, '/')
     project_path = File.join(base_directory, project)
 
     received_ios_api, configs = get_xamarin_ios_api_and_configs(project_path)
-    unless received_ios_api.nil?
-      # monotouch -> mdtool
-      # Xamarin.iOS -> xbuild
-      build_tool = 'mdtool'
-      build_tool = 'xbuild' if received_ios_api == 'Xamarin.iOS'
-
-      project_build_configurations << {
-        project_path: Pathname.new(project_path).relative_path_from(Pathname.new(Dir.pwd)),
-        project_type: 'ios',
-        build_tool: build_tool,
-        configurations: configs
-      }
-    end
+    solution_config[:ios] = true unless received_ios_api.nil?
 
     received_android_api, configs = get_xamarin_android_api_and_configs(project_path)
-    unless received_android_api.nil?
-      # Mono.Android -> xbuild
-      build_tool = 'xbuild'
-
-      project_build_configurations << {
-        project_path: Pathname.new(project_path).relative_path_from(Pathname.new(Dir.pwd)),
-        project_type: 'android',
-        build_tool: build_tool,
-        configurations: configs
-      }
-    end
+    solution_config[:android] = true unless received_android_api.nil?
   end
 
-  next if project_build_configurations.nil? || project_build_configurations.count() == 0
-
-  xamarin_solutions << {
-    solution_path: solution,
-    project_build_configs: project_build_configurations
-  }
+  xamarin_solutions << solution_config
 end
 
 exit 0 if (xamarin_solutions.count) == 0
@@ -164,28 +139,10 @@ puts
 puts "\e[32mXamarin project detected\e[0m"
 
 xamarin_solutions.each do |solution|
-  puts
-  puts "Inspecting solution: #{solution[:solution_path]}"
+  puts ""
+  puts "\e[32m#{solution[:path]} found with configuration:\e[0m"
 
-  if !solution[:project_build_configs].nil? && solution[:project_build_configs].count > 0
-    solution[:project_build_configs].each do |project|
-      puts
-      puts "Inspecting project: #{project[:project_path]}"
-      puts " * project_type: #{project[:project_type]}"
-      puts " * build_tool: #{project[:build_tool]}"
-
-      if !project[:configurations].nil? && project[:configurations].count > 0
-        puts ' * configurations:'
-
-        project[:configurations].each { |configuration| puts "  - #{configuration}" }
-      else
-        puts "\e[31mNo configuration detected\e[0m"
-      end
-    end
-  else
-    puts
-    puts "\e[31mDidn't find any iOS or Android projects at path: #{project_path}\e[0m"
-  end
+  solution[:configs].each { |config| puts " - #{config}" }
 end
 
 save_solutions(branch, xamarin_solutions)
