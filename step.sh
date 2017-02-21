@@ -2,14 +2,16 @@
 
 export THIS_SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+export green='\e[32m'
+export red="\e[31m"
+export reset="\e[0m"
+
+printf "\n${red}This step is deprecated, use repository-scanner step instead. Will be removed by: 2017-08-01.${reset}\n\n"
+
 if [ -z "${source_root_path}" ]; then
 	echo "source_root_path input is missing"
 	exit 1
 fi
-
-export green='\e[32m'
-export red="\e[31m"
-export reset="\e[0m"
 
 cd ${source_root_path}
 if [ $? -ne 0 ]; then
